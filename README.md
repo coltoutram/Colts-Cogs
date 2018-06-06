@@ -1,5 +1,5 @@
 # Colts-Cogs
-I'm trying to update some of them to v3 lol.
+Things will most likely not work.
 
 
 ## Cogs

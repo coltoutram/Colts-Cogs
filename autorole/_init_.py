@@ -1,5 +1,4 @@
-from.autorole import Autorole
+from .autorole import Autorole
 
 def setup(bot):
-    n = Autorole(bot)
-    bot.add_cog(n)
+    bot.add_cog(Autorole())

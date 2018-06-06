@@ -129,7 +129,7 @@ class Sysinfo:
             msg = "\n" + net_ios
         elif args[0].lower() == 'boot':
             msg = "\n" + boot_s
-        await self._say(ctx, msg)
+        await self.bot.say(ctx, msg)
         return
 
     @sysinfo.command(pass_context=True)
@@ -138,7 +138,7 @@ class Sysinfo:
         """File system disk space usage"""
 
         if len(psutil.disk_partitions(all=False)) == 0:
-            await self._say(ctx, "psutil could not find any disk partitions")
+            await self.bot.say(ctx, "psutil could not find any disk partitions")
             return
 
         maxlen = len(max([p.device for p in psutil.disk_partitions(all=False)], key=len))
@@ -160,7 +160,7 @@ class Sysinfo:
                 usage.percent,
                 part.fstype,
                 part.mountpoint)
-        await self._say(ctx, msg)
+        await self.bot.say(ctx, msg)
         return
 
     @sysinfo.command(pass_context=True)
@@ -190,7 +190,7 @@ class Sysinfo:
             "",
             "",
             "")
-        await self._say(ctx, msg)
+        await self.bot.say(ctx, msg)
         return
 
     @sysinfo.command(pass_context=True)
@@ -241,7 +241,7 @@ class Sysinfo:
                 if addr.ptp:
                     msg += "\n      p2p       : {0}".format(addr.ptp)
             msg += "\n"
-        await self._say(ctx, msg)
+        await self.bot.say(ctx, msg)
         return
 
     @sysinfo.command(pass_context=True)
@@ -308,7 +308,7 @@ class Sysinfo:
                 self._size(p._read_per_sec),
                 self._size(p._write_per_sec),
                 p._cmdline)
-        await self._say(ctx, msg)
+        await self.bot.say(ctx, msg)
         return
 
     @sysinfo.command(pass_context=True)
@@ -320,7 +320,7 @@ class Sysinfo:
         msg += "{0}\n".format(self._sprintf_ntuple(psutil.virtual_memory()))
         msg += "SWAP\n----\n"
         msg += "{0}\n".format(self._sprintf_ntuple(psutil.swap_memory()))
-        await self._say(ctx, msg)
+        await self.bot.say(ctx, msg)
         return
 
     @sysinfo.command(pass_context=True)
@@ -359,7 +359,7 @@ class Sysinfo:
                 c.pid or AD,
                 proc_names.get(c.pid, '?')[:15],
             )
-        await self._say(ctx, msg)
+        await self.bot.say(ctx, msg)
         return
 
     @sysinfo.command(pass_context=True)
@@ -416,7 +416,7 @@ class Sysinfo:
                 stats_after.packets_recv - stats_before.packets_recv,
             )
             msg += "\n"
-        await self._say(ctx, msg)
+        await self.bot.say(ctx, msg)
         return
 
     @sysinfo.command(pass_context=True)
@@ -469,7 +469,7 @@ class Sysinfo:
             )
         if ad_pids:
             msg += "warning: access denied for {0} pids".format(len(ad_pids))
-        await self._say(ctx, msg)
+        await self.bot.say(ctx, msg)
         return
 
     @sysinfo.command(pass_context=True)
@@ -550,7 +550,7 @@ class Sysinfo:
                     ctime,
                     cputime,
                     pinfo['name'].strip() or '?')
-        await self._say(ctx, msg)
+        await self.bot.say(ctx, msg)
         return
 
     @sysinfo.command(pass_context=True)
@@ -630,7 +630,7 @@ class Sysinfo:
             av1, av2, av3 = os.getloadavg()
             msg += " Load average: {0:.2f} {1:.2f} {2:.2f}  Uptime: {3}".format(
                 av1, av2, av3, str(uptime).split('.')[0])
-        await self._say(ctx, msg)
+        await self.bot.say(ctx, msg)
 
         # print processes
         template = "{0:<6} {1:<9} {2:>5} {3:>8} {4:>8} {5:>8} {6:>6} {7:>10}  {8:>2}\n"
@@ -665,7 +665,7 @@ class Sysinfo:
                                    p.dict['memory_percent'],
                                    ctime,
                                    p.dict['name'] or '')
-        await self._say(ctx, msg)
+        await self.bot.say(ctx, msg)
         return
 
     @sysinfo.command(pass_context=True)
@@ -687,7 +687,7 @@ class Sysinfo:
                 proc_name)
         if not msg:
             msg = "No users logged in"
-        await self._say(ctx, msg)
+        await self.bot.say(ctx, msg)
         return
 
     def _sprintf_ntuple(self, nt):

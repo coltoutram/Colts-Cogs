@@ -190,7 +190,7 @@ class Sysinfo:
             "",
             "",
             "")
-        await ctx.send(ctx, msg)
+        await ctx.send(ctx, msg, guild)
         return
 
     @sysinfo.command(pass_context=True)

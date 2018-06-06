@@ -190,7 +190,7 @@ class Sysinfo:
             "",
             "",
             "")
-        await ctx.send(ctx, msg, guild)
+        await ctx.send('idk who dis')
         return
 
     @sysinfo.command(pass_context=True)

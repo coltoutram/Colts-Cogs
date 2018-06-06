@@ -1,5 +1,5 @@
-from .sysinfo import SysInfo
+from .sysinfo import Sysinfo
 
 def setup(bot):
-    n = SysInfo(bot)
+    n = Sysinfo(bot)
     bot.add_cog(n)

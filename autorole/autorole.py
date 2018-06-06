@@ -74,10 +74,8 @@ class Autorole:
     async def _agree_maker(self, member):
         guild = member.guild
         self.last_guild = guild
-        # await self._verify_json(None)
         key = ''.join(random.choice(string.ascii_uppercase +
                                     string.digits) for _ in range(6))
-        # <3 Stackoverflow http://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python/23728630#23728630
         self.users[member.id] = key
         ch = discord.utils.get(
             self.bot.get_all_channels(),

@@ -1,5 +1,5 @@
 from .sysinfo import Sysinfo
+from redbot.core.bot import Red
 
-def setup(bot):
-    n = Sysinfo(bot)
-    bot.add_cog(n)
+def setup(bot: Red):
+    bot.add_cog(Sysinfo())

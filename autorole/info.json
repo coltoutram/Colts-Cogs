@@ -1,0 +1,12 @@
+{
+  "author": [
+    "ColtOutram, Lunar-Dust"
+  ],
+  "description": "Automatically adds a role to users who join your server.",
+  "short": "Automatically adds a role to users who join your server.",
+  "tags": [
+    "role",
+    "administration"
+  ],
+  "type": "COG"
+}

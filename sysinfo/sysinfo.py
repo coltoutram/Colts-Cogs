@@ -16,7 +16,7 @@ except ImportError:
 
 # Most of these scripts are from https://github.com/giampaolo/psutil/tree/master/scripts
 # noinspection SpellCheckingInspection,PyPep8Naming,PyPep8Naming
-class SysInfo:
+class Sysinfo:
     """Display system information for the machine running the bot"""
 
     def __init__(self, bot):
@@ -728,7 +728,7 @@ class SysInfo:
 
 def setup(bot):
     if psutilAvailable:
-        n = SysInfo(bot)
+        n = Sysinfo(bot)
         bot.add_cog(n)
     else:
         raise RuntimeError("You need to run 'pip3 install psutil'")

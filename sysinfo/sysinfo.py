@@ -129,38 +129,7 @@ class Sysinfo:
             msg = "\n" + net_ios
         elif args[0].lower() == 'boot':
             msg = "\n" + boot_s
-        await ctx.send(ctx, msg)
-        return
-
-    @sysinfo.command(pass_context=True)
-    @checks.is_owner()
-    async def df(self, ctx):
-        """File system disk space usage"""
-
-        if len(psutil.disk_partitions(all=False)) == 0:
-            await ctx.send(ctx, "psutil could not find any disk partitions")
-            return
-
-        maxlen = len(max([p.device for p in psutil.disk_partitions(all=False)], key=len))
-        template = "\n{0:<{1}} {2:>9} {3:>9} {4:>9} {5:>9}% {6:>9}  {7}"
-        msg = template.format("Device", maxlen, "Total", "Used", "Free", "Used ", "Type", "Mount")
-        for part in psutil.disk_partitions(all=False):
-            if os.name == 'nt':
-                if 'cdrom' in part.opts or part.fstype == '':
-                    # skip cd-rom drives with no disk in it; they may raise ENOENT,
-                    # pop-up a Windows GUI error for a non-ready partition or just hang.
-                    continue
-            usage = psutil.disk_usage(part.mountpoint)
-            msg += template.format(
-                part.device,
-                maxlen,
-                self._size(usage.total),
-                self._size(usage.used),
-                self._size(usage.free),
-                usage.percent,
-                part.fstype,
-                part.mountpoint)
-        await ctx.send(ctx, msg)
+        await ctx.send(msg)
         return
 
     @sysinfo.command(pass_context=True)
@@ -248,7 +217,7 @@ class Sysinfo:
                 stats_after.packets_recv - stats_before.packets_recv,
             )
             msg += "\n"
-        await ctx.send(ctx, msg)
+        await ctx.send(msg)
         return
 
    
@@ -312,29 +281,7 @@ class Sysinfo:
             str(int(swap.used / 1024 / 1024)) + "M",
             str(int(swap.total / 1024 / 1024)) + "M"
         )
-
-        # processes number and status
-        st = []
-        for x, y in procs_status.items():
-            if y:
-                st.append("%s=%s" % (x, y))
-        st.sort(key=lambda x: x[:3] in ('run', 'sle'), reverse=True)
-        msg += " Processes: {0} ({1})\n".format(num_procs, ', '.join(st))
-        # load average, uptime
-        uptime = datetime.datetime.now() - datetime.datetime.fromtimestamp(psutil.boot_time())
-        if not hasattr(os, "getloadavg"):
-            msg += " Load average: N/A  Uptime: {0}".format(
-                str(uptime).split('.')[0])
-        else:
-            av1, av2, av3 = os.getloadavg()
-            msg += " Load average: {0:.2f} {1:.2f} {2:.2f}  Uptime: {3}".format(
-                av1, av2, av3, str(uptime).split('.')[0])
-        await ctx.send(ctx, msg)
-
-        # print processes
-        template = "{0:<6} {1:<9} {2:>5} {3:>8} {4:>8} {5:>8} {6:>6} {7:>10}  {8:>2}\n"
-        msg = template.format("PID", "USER", "NI", "VIRT", "RES", "CPU%", "MEM%",
-                              "TIME+", "NAME")
+		
         for p in processes:
             # TIME+ column shows process CPU cumulative time and it
             # is expressed as: "mm:ss.ms"
@@ -364,26 +311,26 @@ class Sysinfo:
                                    p.dict['memory_percent'],
                                    ctime,
                                    p.dict['name'] or '')
-        await ctx.send(ctx, msg)
+        await ctx.send(msg)
         return
 
     # Respect 2000 character limit per message
-    #async def _say(self, ctx, msg, escape=True, wait=True):
-     #   template = "```{0}```" if escape else "{0}"
-     #   buf = ""
-     #   for line in msg.splitlines():
-      #      if len(buf) + len(line) >= 1900:
-      #          await ctx.send(template.format(buf))
-      #          buf = ""
-       #         if wait:
-        #            await ctx.send("Type 'more' or 'm' to continue...")
-       #             answer = await self.bot.wait_for_message(timeout=5, author=ctx.message.author)
-        #            if not answer or answer.content.lower() not in ["more", "m"]:
-         #               await ctx.send("Command output stopped.")
-         #               return
-         #   buf += line + "\n"
-       # if buf:
-       #     await ctx.send(template.format(buf))
+    async def _say(self, ctx, msg, escape=True, wait=True):
+        template = "```{0}```" if escape else "{0}"
+        buf = ""
+        for line in msg.splitlines():
+            if len(buf) + len(line) >= 1900:
+                await ctx.send(template.format(buf))
+                buf = ""
+                if wait:
+                    await ctx.send("Type 'more' or 'm' to continue...")
+                    answer = await self.bot.wait_for_message(timeout=5, author=ctx.message.author)
+                    if not answer or answer.content.lower() not in ["more", "m"]:
+                        await ctx.send("Command output stopped.")
+                        return
+            buf += line + "\n"
+        if buf:
+            await ctx.send(template.format(buf))
 
 
 def setup(bot):

@@ -26,7 +26,7 @@ class Sysinfo:
     async def sysinfo(self, ctx):
         """Shows system information for the machine running the bot"""
         if ctx.invoked_subcommand is None:
-            await self.bot.send_cmd_help(ctx)
+            await ctx.send_help()
 
     @sysinfo.command(pass_context=True)
     @checks.is_owner()
@@ -312,60 +312,7 @@ class Sysinfo:
             str(int(swap.used / 1024 / 1024)) + "M",
             str(int(swap.total / 1024 / 1024)) + "M"
         )
-
-        # processes number and status
-        st = []
-        for x, y in procs_status.items():
-            if y:
-                st.append("%s=%s" % (x, y))
-        st.sort(key=lambda x: x[:3] in ('run', 'sle'), reverse=True)
-        msg += " Processes: {0} ({1})\n".format(num_procs, ', '.join(st))
-        # load average, uptime
-        uptime = datetime.datetime.now() - datetime.datetime.fromtimestamp(psutil.boot_time())
-        if not hasattr(os, "getloadavg"):
-            msg += " Load average: N/A  Uptime: {0}".format(
-                str(uptime).split('.')[0])
-        else:
-            av1, av2, av3 = os.getloadavg()
-            msg += " Load average: {0:.2f} {1:.2f} {2:.2f}  Uptime: {3}".format(
-                av1, av2, av3, str(uptime).split('.')[0])
-        await ctx.send(ctx, msg)
-
-        # print processes
-        template = "{0:<6} {1:<9} {2:>5} {3:>8} {4:>8} {5:>8} {6:>6} {7:>10}  {8:>2}\n"
-        msg = template.format("PID", "USER", "NI", "VIRT", "RES", "CPU%", "MEM%",
-                              "TIME+", "NAME")
-        for p in processes:
-            # TIME+ column shows process CPU cumulative time and it
-            # is expressed as: "mm:ss.ms"
-            if p.dict['cpu_times'] is not None:
-                ctime = datetime.timedelta(seconds=sum(p.dict['cpu_times']))
-                ctime = "%s:%s.%s" % (ctime.seconds // 60 % 60,
-                                      str((ctime.seconds % 60)).zfill(2),
-                                      str(ctime.microseconds)[:2])
-            else:
-                ctime = ''
-            if p.dict['memory_percent'] is not None:
-                p.dict['memory_percent'] = round(p.dict['memory_percent'], 1)
-            else:
-                p.dict['memory_percent'] = ''
-            if p.dict['cpu_percent'] is None:
-                p.dict['cpu_percent'] = ''
-            if p.dict['username']:
-                username = p.dict['username'][:8]
-            else:
-                username = ''
-            msg += template.format(p.pid,
-                                   username,
-                                   p.dict['nice'] or '',
-                                   self._size(getattr(p.dict['memory_info'], 'vms', 0)),
-                                   self._size(getattr(p.dict['memory_info'], 'rss', 0)),
-                                   p.dict['cpu_percent'],
-                                   p.dict['memory_percent'],
-                                   ctime,
-                                   p.dict['name'] or '')
-        await ctx.send(ctx, msg)
-        return
+			return
 
     @sysinfo.command(pass_context=True)
     @checks.is_owner()

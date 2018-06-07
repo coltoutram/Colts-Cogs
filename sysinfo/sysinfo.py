@@ -368,22 +368,22 @@ class Sysinfo:
         return
 
     # Respect 2000 character limit per message
-    async def _say(ctx, msg, escape=True, wait=True):
-        template = "```{0}```" if escape else "{0}"
-        buf = ""
-        for line in msg.splitlines():
-            if len(buf) + len(line) >= 1900:
-                await ctx.send(template.format(buf))
-                buf = ""
-                if wait:
-                    await ctx.send("Type 'more' or 'm' to continue...")
-                    answer = await self.bot.wait_for_message(timeout=5, author=ctx.message.author)
-                    if not answer or answer.content.lower() not in ["more", "m"]:
-                        await ctx.send("Command output stopped.")
-                        return
-            buf += line + "\n"
-        if buf:
-            await ctx.send(template.format(buf))
+    #async def _say(self, ctx, msg, escape=True, wait=True):
+     #   template = "```{0}```" if escape else "{0}"
+     #   buf = ""
+     #   for line in msg.splitlines():
+      #      if len(buf) + len(line) >= 1900:
+      #          await ctx.send(template.format(buf))
+      #          buf = ""
+       #         if wait:
+        #            await ctx.send("Type 'more' or 'm' to continue...")
+       #             answer = await self.bot.wait_for_message(timeout=5, author=ctx.message.author)
+        #            if not answer or answer.content.lower() not in ["more", "m"]:
+         #               await ctx.send("Command output stopped.")
+         #               return
+         #   buf += line + "\n"
+       # if buf:
+       #     await ctx.send(template.format(buf))
 
 
 def setup(bot):

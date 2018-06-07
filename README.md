@@ -1,5 +1,5 @@
 # Colts-Cogs
-Things will most likely not work.
+Master branch is what should work, tests branch is only for what I'm currently working on and will be very messy.
 
 
 ## Cogs

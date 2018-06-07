@@ -129,7 +129,7 @@ class Sysinfo:
             msg = "\n" + net_ios
         elif args[0].lower() == 'boot':
             msg = "\n" + boot_s
-        await ctx.send(ctx, msg)
+        await ctx.send(msg)
         return
 
     @sysinfo.command(pass_context=True)
@@ -160,7 +160,7 @@ class Sysinfo:
                 usage.percent,
                 part.fstype,
                 part.mountpoint)
-        await ctx.send(ctx, msg)
+        await ctx.send(msg)
         return
 
     @sysinfo.command(pass_context=True)
@@ -248,7 +248,7 @@ class Sysinfo:
                 stats_after.packets_recv - stats_before.packets_recv,
             )
             msg += "\n"
-        await ctx.send(ctx, msg)
+        await ctx.send(msg)
         return
 
    
@@ -313,7 +313,7 @@ class Sysinfo:
             str(int(swap.total / 1024 / 1024)) + "M"
         )
 
-        await ctx.send(ctx, msg)
+        await ctx.send(msg)
         return
 
     @sysinfo.command(pass_context=True)
@@ -335,7 +335,7 @@ class Sysinfo:
                 proc_name)
         if not msg:
             msg = "No users logged in"
-        await ctx.send(ctx, msg)
+        await ctx.send(msg)
         return
 
     def _sprintf_ntuple(self, nt):

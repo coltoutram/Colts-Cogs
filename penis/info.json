@@ -4,7 +4,6 @@
   ],
   "description": "Usage: [p]penis <user>\nThis is 100% accurate.",
   "short": "Detects users' penis size with maximum accuracy.",
-  "install_msg" : "Commands are in [sysinfo|sys] group. [p]help sys",
   "tags": [
     "Fum",
     "Lol"

@@ -3,7 +3,10 @@ Master branch is what should work, tests branch is only for what I'm currently w
 
 
 ## Cogs
-- autorole:       Automatically give members who join the server a specified role</li>
+- autorole:       Automatically give members who join the server a specified role
+- actionlogs:     Modlogs/Logs a lot of stuff (Renamed from modlogs because it doesnt work with the original modlog cog.)
+- penis:          Explains itself.
+- sysinfo:        Show information about the system (cpu usage, disk info etc.)</li>
 
 
 ## More cog information

@@ -1,9 +1,0 @@
-{
-    "AUTHOR" : "BakersBakeBread",
-    "INSTALL_MSG" : "This will scan https://bans.discordlist.net/ to see if a user has a ban. Remember to set channel.",
-    "NAME" : "bancheck",
-    "SHORT" : "Check if user is banned on https://bans.discordlist.net/",
-    "DESCRIPTION" : "Check if user is banned on https://bans.discordlist.net/",
-    "TAGS" : ["ban", "bancheck", "check"],
-    "HIDDEN" : false
-}

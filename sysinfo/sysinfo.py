@@ -312,7 +312,9 @@ class Sysinfo:
             str(int(swap.used / 1024 / 1024)) + "M",
             str(int(swap.total / 1024 / 1024)) + "M"
         )
-		return
+
+        await ctx.send(ctx, msg)
+        return
 
     @sysinfo.command(pass_context=True)
     @checks.is_owner()

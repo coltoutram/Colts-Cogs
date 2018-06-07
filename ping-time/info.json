@@ -1,0 +1,12 @@
+{
+  "author": [
+    "Colt#0001, aikaterna"
+  ],
+  "description": "Pings the server and shows the latency.",
+  "short": "Pings the server and shows the latency.",
+  "tags": [
+    "Utility",
+    "Ping"
+  ],
+  "type": "COG"
+}

@@ -368,7 +368,7 @@ class Sysinfo:
         return
 
     # Respect 2000 character limit per message
-    async def _say(self, ctx, msg, escape=True, wait=True):
+    async def _say(ctx, msg, escape=True, wait=True):
         template = "```{0}```" if escape else "{0}"
         buf = ""
         for line in msg.splitlines():

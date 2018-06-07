@@ -316,16 +316,6 @@ class Sysinfo:
         await ctx.send(msg)
         return
 
-    
-		def _sprintf_ntuple(self, nt):
-        s = ""
-        for name in nt._fields:
-            value = getattr(nt, name)
-            if name != 'percent':
-                value = self._size(value)
-            s += "{0:<10} : {1:>7}\n".format(name.capitalize(), value)
-        return s
-
     @staticmethod
     def _size(num):
         for unit in ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB"]:

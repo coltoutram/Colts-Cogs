@@ -1,0 +1,14 @@
+{
+  "author": [
+    "Colt#0001, kagami#6142"
+  ],
+  "description": "Uses psutil to show various system information for the machine running the bot",
+  "short": "Automatically adds a role to users who join your server.",
+  "install_msg" : "Commands are in [sysinfo|sys] group. [p]help sys",
+  "requirements": ["psutil"],
+  "tags": [
+    "utility",
+    "system"
+  ],
+  "type": "COG"
+}

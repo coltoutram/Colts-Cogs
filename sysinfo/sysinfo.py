@@ -316,29 +316,8 @@ class Sysinfo:
         await ctx.send(msg)
         return
 
-    @sysinfo.command(pass_context=True)
-    @checks.is_owner()
-    async def who(self, ctx):
-        """Shows which users are currently logged in"""
-
-        msg = ""
-        users = psutil.users()
-        for user in users:
-            proc_name = ""
-            if hasattr(user, "pid"):
-                proc_name = psutil.Process(user.pid).name()
-            msg += "{0:<12} {1:<10} {2:<10} {3:<14} {4}\n".format(
-                user.name,
-                user.terminal or '-',
-                datetime.datetime.fromtimestamp(user.started).strftime("%Y-%m-%d %H:%M"),
-                "(%s)" % user.host if user.host else "",
-                proc_name)
-        if not msg:
-            msg = "No users logged in"
-        await ctx.send(msg)
-        return
-
-    def _sprintf_ntuple(self, nt):
+    
+		def _sprintf_ntuple(self, nt):
         s = ""
         for name in nt._fields:
             value = getattr(nt, name)

@@ -450,7 +450,7 @@ class Actionlogs:
                     before.bitrate, after.bitrate)
                 bitrate.add_field(name="Info:", value=infomsg, inline=False)
                 try:
-                    await sef.bot.send_message(guild.get_channel(channel), embed=bitrate)
+                    await self.bot.send_message(guild.get_channel(channel), embed=bitrate)
                 except:
                     pass
             else:

@@ -9,7 +9,6 @@ import os
 import subprocess
 import logging
 import datetime
-#from __main__ import send_cmd_help, settings
 
 try:
     import speedtest
@@ -27,8 +26,7 @@ class Speedtest:
         self.config = Config.get_conf(self, 24341100993)
         self.direct = "data/speedtest/settings.json"
         self.users = {}
-        self.messages = {}; print('NOTICE: LOADED INIT')
-        #self.settings = dataIO.load_json(self.filepath)
+        self.messages = {}; print('NOTICE: LOADED SPEEDTEST')
 
     def speed_test(self):
         return str(subprocess.check_output(['speedtest-cli'], stderr=subprocess.STDOUT))
@@ -40,9 +38,6 @@ class Speedtest:
             author = ctx.message.author
             user = author
             now = datetime.datetime.now()
-            #high = self.config[author.id]['upperbound']
-            #low = self.config[author.id]['lowerbound']
-            #multiplyer = ('mbps')
             message12 = await ctx.send(" :stopwatch: **Running speedtest. This may take a while!** :stopwatch:")
             DOWNLOAD_RE = re.compile(r"Download: ([\d.]+) .bit")
             UPLOAD_RE = re.compile(r"Upload: ([\d.]+) .bit")
@@ -55,15 +50,7 @@ class Speedtest:
             message_down = '**{}** mbps'.format(download)
             message_up = '**{}** mbps'.format(upload)
             message_ping = '**{}** ms'.format(ping)
-           # if download >= float(high):
             colour = 0x45FF00
-                #indicator = 'Fast'
-            #if download > float(low) and download < float(high):
-                #colour = 0xFF4500
-                #indicator = 'Fair'
-            #if download <= float(low):
-              #  colour = 0xFF3A00
-               # indicator = 'Slow'
             embed = discord.Embed(colour=colour, description=message)
             embed.title = 'Speedtest Results'
             embed.add_field(name='Download', value=message_down)
@@ -74,14 +61,6 @@ class Speedtest:
         except KeyError:
             await ctx.send('Please setup the speedtest settings using **{}parameters**'.format(ctx.prefix))
 
-    
-
-
-#def setup(bot):
-#    check_folder()
-#    check_file()
-#    if module_avail == True:
-#        bot.add_cog(speedtest(bot))
     if module_avail == False:
         ctx.send("You need to run `pip install speedtest-cli`");
         raise RuntimeError("You need to run `pip3 install speedtest-cli`")

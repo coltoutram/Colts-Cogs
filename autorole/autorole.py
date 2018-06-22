@@ -24,7 +24,7 @@ class Autorole:
         self.direct = "data/autorole/settings.json"
         #self.settings = dataIO.load_json(self.file_path)
         self.users = {}
-        self.messages = {}; print('NOTICE: LOADED INIT')
+        self.messages = {}; print('NOTICE: LOADED AUTOROLE')
 
         
     async def _no_perms(self, guild):
@@ -35,7 +35,7 @@ class Autorole:
              "order to use autorole. You can change the "
              "permissions in the \"Roles\" tab of the "
              "guild settings.")
-        await self.bot.send_message(guild, m)
+        await ctx.send(guild, m)
 
 
     async def on_message(self, message):

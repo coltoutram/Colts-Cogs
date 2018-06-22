@@ -19,7 +19,7 @@ class Actionlogs:
         self.bot = bot
         self.direct = "data/actionlogset/settings.json"
         self.config = Config.get_conf(self, 2463123480)
-        self.config.register_guild(**inv_settings)
+        self.config.register_guild(**inv_settings); print('NOTICE: LOADED ACTIONLOGS')
 
     @checks.admin_or_permissions(administrator=True)
     @commands.group(name='actionlogtoggle', pass_context=True, no_pm=True)
@@ -450,7 +450,7 @@ class Actionlogs:
                     before.bitrate, after.bitrate)
                 bitrate.add_field(name="Info:", value=infomsg, inline=False)
                 try:
-                    await self.bot.send_message(guild.get_channel(channel), embed=bitrate)
+                    await ctx.send(guild.get_channel(channel), embed=bitrate)
                 except:
                     pass
             else:

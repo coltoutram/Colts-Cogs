@@ -1,7 +1,7 @@
 {
     "name" : "Colts-Cogs",
     "author" : ["ColtOutram"],
-    "short" : "Various cogs",
-    "description" : "I try to make v2 cogs work on v3.",
-    "install_msg" : "Thank you for using my cogs, if you need help msg Colt#0001"
+    "short" : "Various cogs for v3",
+    "description" : "Various cogs for v3 that are from cogs.red from v2.",
+    "install_msg" : "Thank you for using my cogs, if you need help msg Colt#0001 or use !contact."
 }

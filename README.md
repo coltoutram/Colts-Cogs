@@ -1,10 +1,11 @@
 # Colts-Cogs
-Master branch is what should work, tests branch is only for what I'm currently working on and will be very messy.
+They're all v3 cogs and don't look at the develop branch as its just for testing and really messy.
 
 
 ## Cogs
-- autorole:       Automatically give members who join the server a specified role
-- actionlogs:     Modlogs/Logs a lot of stuff (Renamed from modlogs because it doesnt work with the original modlog cog.)
+- actionlogs:     Modlogs/Logs a lot of stuff (Renamed from modlogs because it doesnt work with the original modlog cog).
+- autorole:       Automatically give members who join the server a specified role.
+- ping-time:      Pings and shows the time.
 - penis:          Explains itself.
 - sysinfo:        Show information about the system (cpu usage, disk info etc.)</li>
 
@@ -12,7 +13,7 @@ Master branch is what should work, tests branch is only for what I'm currently w
 ## More cog information
 ### Autorole
 #### Note:
-If you want the users to recieve the role immediately, do NOT set an agreement channel
+If you want the users to recieve the role immediately, do NOT set an agreement channel.
 
 This cog allows you to automatically assign new members of your server a role.
 ##### Usage:

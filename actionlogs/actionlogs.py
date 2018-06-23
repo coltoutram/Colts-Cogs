@@ -273,7 +273,7 @@ class Actionlogs:
     async def on_member_join(self, member):
         guild = member.guild
         
-        if await self.config.guild(guild).toggljoin() == False:
+        if await self.config.guild(guild).togglejoin() == False:
             return
         channel = await self.config.guild(guild).Channel()
         if channel is None:
@@ -284,7 +284,7 @@ class Actionlogs:
         if await self.config.guild(guild).embed() == True:
             name = member
             # name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
-            joinmsg = discord.Embed(description=member.mention, colour=discord.Color.red(), timestamp=member.joined_at)
+            joinmsg = discord.Embed(description=member.mention, colour=discord.Color.green(), timestamp=member.joined_at)
             # infomessage = "Total Users: {}".format(users)
             joinmsg.add_field(name="Total Users:", value=str(users), inline=True)
             joinmsg.set_footer(text="User ID: {}".format(member.id), icon_url=member.avatar_url)
@@ -483,7 +483,7 @@ class Actionlogs:
             name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
             
             infomessage = "A message by {}, was edited in {}".format(before.author.mention, before.channel.mention)
-            delmessage = discord.Embed(description=infomessage, colour=discord.Color.green(), timestamp=after.created_at)
+            delmessage = discord.Embed(description=infomessage, colour=discord.Color.blue(), timestamp=after.created_at)
             delmessage.add_field(name="Before Message:", value=cleanbefore, inline=False)
             delmessage.add_field(name="After Message:", value=cleanafter)
             delmessage.set_footer(text="User ID: {}".format(before.author.id), icon_url=before.author.avatar_url)

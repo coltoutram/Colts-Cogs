@@ -22,7 +22,6 @@ class Autorole:
         self.config = Config.get_conf(self, 2434110087)
         self.config.register_guild(**default_settings)
         self.direct = "data/autorole/settings.json"
-        #self.settings = dataIO.load_json(self.file_path)
         self.users = {}
         self.messages = {}; print('NOTICE: LOADED AUTOROLE')
 
@@ -116,13 +115,13 @@ class Autorole:
 
     async def on_member_join(self, member):
         guild = member.guild
-        self.last_guild = guild  # In case something breaks
+        self.last_guild = guild
 
         if await self.config.guild(guild).ENABLED():
             try:
                 if await self.config.guild(guild).AGREE_CHANNEL() is not None:
                     await self._agree_maker(member)
-                else:  # Immediately give the new user the role
+                else:
                     await self._auto_give(member)
             except KeyError as e:
                 self.last_guild = guild
@@ -130,7 +129,6 @@ class Autorole:
     @commands.group(name="autorole", pass_context=True, no_pm=True)
     async def autorole(self, ctx):
         """Change settings for autorole
-
         Requires the manage roles permission"""
         guild = ctx.message.guild
         if ctx.invoked_subcommand is None:

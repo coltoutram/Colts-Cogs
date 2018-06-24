@@ -13,7 +13,7 @@ URL = "https://bans.discordlist.net/api"
 DEFAULT = {
 "ENABLED" : True,
 "guild" : None,
-"ban" : False} # will add another day
+"ban" : False}
 
 
 class BanList():
@@ -69,10 +69,10 @@ class BanList():
         else:
             if await self.config.guild(guild).ENABLED():
                 await self.config.guild(guild).ENABLED.set(False)
-                await ctx.send("Bancheck is now Enabled.")
+                await ctx.send("Bancheck is now enabled.")
             else:
                 await self.config.guild(guild).ENABLED.set(True)
-                await ctx.send("Bancheck is now Disabled.")
+                await ctx.send("Bancheck is now disabled.")
 
     @bancheck.command(pass_context=True, name="search")
     async def _banlook(self, ctx, user:discord.Member=None):

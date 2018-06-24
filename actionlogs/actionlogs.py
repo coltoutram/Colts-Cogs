@@ -283,11 +283,7 @@ class Actionlogs:
             name = member
             # name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
             joinmsg = discord.Embed(description=member.mention, colour=discord.Color.green(), timestamp=member.joined_at)
-<<<<<<< HEAD
             infomessage = "Total Users: {}".format(users)
-=======
-            
->>>>>>> 690f4128bf7547abfb18176b72083a83109696a3
             joinmsg.add_field(name="Total Users:", value=str(users), inline=True)
             joinmsg.set_footer(text="User ID: {}".format(member.id), icon_url=member.avatar_url)
             joinmsg.set_author(name=name.display_name + " has joined the guild",url=member.avatar_url, icon_url=member.avatar_url)

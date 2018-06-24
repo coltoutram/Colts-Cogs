@@ -7,11 +7,11 @@ import asyncio
 import os
 from random import choice, randint
 
-inv_settings = {"embed": True, "Channel": None, "toggleedit": True, "toggledelete": True, "toggleuser": True,
-                "toggleroles": True,
-                "togglevoice": True,
-                "toggleban": True, "togglejoin": True, "toggleleave": True, "togglechannel": True,
-                "toggleguild": True}
+inv_settings = {"embed": True, "Channel": None, "toggleedit": False, "toggledelete": False, "toggleuser": False,
+                "toggleroles": False,
+                "togglevoice": False,
+                "toggleban": False, "togglejoin": False, "toggleleave": False, "togglechannel": False,
+                "toggleguild": False}
 
 
 class Actionlogs:
@@ -350,7 +350,7 @@ class Actionlogs:
                     voice1.set_thumbnail(
                         url="http://www.hey.fr/fun/emoji/twitter/en/icon/twitter/565-emoji_twitter_speaker_with_three_sound_waves.png")
                     try:
-                        await guild.get_channel(channel).send( embed=voice1)
+                        await guild.get_channel(channel).send(embed=voice1)
                     except:
                         pass
                 else:
@@ -369,7 +369,7 @@ class Actionlogs:
                                      icon_url="https://s-media-cache-ak0.pinimg.com/originals/27/18/77/27187782801d15f756a27156105d1233.png")
                     text1.set_thumbnail(
                         url="https://s-media-cache-ak0.pinimg.com/originals/27/18/77/27187782801d15f756a27156105d1233.png")
-                    await guild.get_channel(channel).send( embed=text1)
+                    await guild.get_channel(channel).send(embed=text1)
                 else:
                     fmt = "%H:%M:%S"
                     await guild.get_channel(channel).send(
@@ -408,7 +408,7 @@ class Actionlogs:
                         before.name, before.position, after.position)
                     voice2.add_field(name="Info:", value=infomsg, inline=False)
                     try:
-                        await guild.get_channel(channel).send( embed=voice2)
+                        await guild.get_channel(channel).send(embed=voice2)
                     except:
                         pass
                 else:
@@ -428,7 +428,7 @@ class Actionlogs:
                         before.position, after.position)
                     text2.add_field(name="Info:", value=infomsg, inline=False)
                     try:
-                        await guild.get_channel(channel).send( embed=text2)
+                        await guild.get_channel(channel).send(embed=text2)
                     except:
                         pass
                 else:
@@ -529,27 +529,50 @@ class Actionlogs:
             return
         time = datetime.datetime.utcnow()
         fmt = '%H:%M:%S'
-        if await self.config.guild(guild).embed() == True:
-            name = member
-            name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
-            updmessage = discord.Embed(description=name, colour=discord.Color.blue(), timestamp=time)
-            infomessage = "__{}__'s voice status has changed".format(member.name)
-            updmessage.add_field(name="Info:", value=infomessage, inline=False)
-            updmessage.add_field(name="Voice Channel Before:", value=before.channel)
-            updmessage.add_field(name="Voice Channel After:", value=after.channel)
-            updmessage.set_footer(text="User ID: {}".format(member.id))
-            updmessage.set_author(name=time.strftime(fmt) + " - Voice Channel Changed",
-                                  url="http://i.imgur.com/8gD34rt.png")
-            updmessage.set_thumbnail(url="http://i.imgur.com/8gD34rt.png")
-            try:
-                await guild.get_channel(channel).send( embed=updmessage)
-            except:
-                pass
-        else:
-            await guild.get_channel(channel).send(
-                                        ":person_with_pouting_face::skin-tone-3: `{}` **{}'s** voice status has updated. **Channel**: {}\n**Local Mute:** {} **Local Deaf:** {} **guild Mute:** {} **guild Deaf:** {}".format(
-                                            time.strftime(fmt), after.name, after.voice_channel, after.self_mute,
-                                            after.self_deaf, after.mute, after.deaf))
+        if await self.config.guild(guild).embed() == True: 
+            if before.channel is None:
+                name = member
+                name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
+                updmessage = discord.Embed(description=name, colour=discord.Color.blue(), timestamp=time)
+                updmessage.add_field(name="has joined voice channel:", value=after.channel)
+                updmessage.set_footer(text="User ID: {}".format(member.id))
+                updmessage.set_author(name=time.strftime(fmt) + " - Voice Channel Changed",
+                                    url="http://i.imgur.com/8gD34rt.png")
+                try:
+                    return await guild.get_channel(channel).send( embed=updmessage)
+                except:
+                    pass
+
+            elif after.channel is None:
+                name = member
+                name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
+                updmessage = discord.Embed(description=name, colour=discord.Color.blue(), timestamp=time)
+                updmessage.add_field(name="has left voice channel:", value=before.channel)
+                updmessage.set_footer(text="User ID: {}".format(member.id))
+                updmessage.set_author(name=time.strftime(fmt) + " - Voice Channel Changed",
+                                    url="http://i.imgur.com/8gD34rt.png")
+                try:
+                    return await guild.get_channel(channel).send( embed=updmessage)
+                except:
+                    pass
+            else:
+                name = member
+                name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
+                updmessage = discord.Embed(description=name, colour=discord.Color.blue(), timestamp=time)
+                updmessage.add_field(name="Changed to voice channel:", value=after.channel)
+                updmessage.set_footer(text="User ID: {}".format(member.id))
+                updmessage.set_author(name=time.strftime(fmt) + " - Voice Channel Changed",
+                                    url="http://i.imgur.com/8gD34rt.png")
+                try:
+                    await guild.get_channel(channel).send( embed=updmessage)
+                except:
+                    pass
+                else:  
+                    await guild.get_channel(channel).send(
+                        ":person_with_pouting_face::skin-tone-3: `{}` **Channel**: {}\n**Local Mute:** {} **Local Deaf:** {} **guild Mute:** {} **guild Deaf:** {}".format(
+                        time.strftime(fmt), after.name, after.voice_channel, after.self_mute,
+                        after.self_deaf, after.mute, after.deaf))
+
 
 
     async def on_member_update(self, before, after):
@@ -627,3 +650,113 @@ class Actionlogs:
         else:
             msg = ":hammer: `{}` {}({}) has been banned!".format(time.strftime(fmt), member, member.id)
             await guild.get_channel(channel).send(msg)
+
+    @actionlogset.command(name='toggleall', pass_context=True, no_pm=True)
+    async def toggleall(self, ctx):
+        """Toggles all settings."""
+
+        guild = ctx.message.guild
+        
+        if await self.config.guild(guild).toggleedit() == False:
+            await self.config.guild(guild).toggleedit.set(True)
+            
+            await ctx.send("Edit messages enabled")
+        elif await self.config.guild(guild).toggleedit() == True:
+            await self.config.guild(guild).toggleedit.set(False)
+            
+            await ctx.send("Edit messages disabled")
+
+        guild = ctx.message.guild
+        
+        if await self.config.guild(guild).togglejoin() == False:
+            await self.config.guild(guild).togglejoin.set(True)
+            
+            await ctx.send("Enabled join logs.")
+        elif await self.config.guild(guild).togglejoin() == True:
+            await self.config.guild(guild).togglejoin.set(False)
+            
+            await ctx.send("Disabled join logs.")
+
+        guild = ctx.message.guild
+        
+        if await self.config.guild(guild).toggleguild() == False:
+            await self.config.guild(guild).toggleguild.set(True)
+            
+            await ctx.send("Enabled guild logs.")
+        elif await self.config.guild(guild).toggleguild() == True:
+            await self.config.guild(guild).toggleguild.set(False)
+            
+            await ctx.send("Disabled guild logs.")
+
+        guild = ctx.message.guild
+        
+        if await self.config.guild(guild).togglechannel() == False:
+            await self.config.guild(guild).togglechannel.set(True)
+            
+            await ctx.send("Enabled channel logs.")
+        elif await self.config.guild(guild).togglechannel() == True:
+            await self.config.guild(guild).togglechannel.set(False)
+            
+            await ctx.send("Disabled channel logs.")
+
+        guild = ctx.message.guild
+        
+        if await self.config.guild(guild).toggleleave() == False:
+            await self.config.guild(guild).toggleleave.set(True)
+            
+            await ctx.send("Enabled leave logs.")
+        elif await self.config.guild(guild).toggleleave() == True:
+            await self.config.guild(guild).toggleleave.set(False)
+            
+            await ctx.send("Disabled leave logs.")
+
+        guild = ctx.message.guild
+        
+        if await self.config.guild(guild).toggledelete() == False:
+            await self.config.guild(guild).toggledelete.set(True)
+            
+            await ctx.send("Delete messages enabled")
+        elif await self.config.guild(guild).toggledelete() == True:
+            await self.config.guild(guild).toggledelete.set(False)
+            
+            await ctx.send("Delete messages disabled")
+
+        guild = ctx.message.guild
+        
+        if await self.config.guild(guild).toggleuser() == False:
+            await self.config.guild(guild).toggleuser.set(True)
+            
+            await ctx.send("User messages enabled")
+        elif await self.config.guild(guild).toggleuser() == True:
+            await self.config.guild(guild).toggleuser.set(False)
+            
+            await ctx.send("User messages disabled")
+
+        guild = ctx.message.guild
+        
+        if await self.config.guild(guild).toggleroles() == False:
+            await self.config.guild(guild).toggleroles.set(True)
+            await ctx.send("Role messages enabled")
+        elif await self.config.guild(guild).toggleroles() == True:
+            await self.config.guild(guild).toggleroles.set(False)
+            await ctx.send("Role messages disabled")
+
+        guild = ctx.message.guild
+        
+        if await self.config.guild(guild).togglevoice() == False:
+            await self.config.guild(guild).togglevoice.set(True)
+            await ctx.send("Voice messages enabled")
+        elif await self.config.guild(guild).togglevoice() == True:
+            await self.config.guild(guild).togglevoice.set(False)
+            await ctx.send("Voice messages disabled")
+
+        guild = ctx.message.guild
+        
+        if await self.config.guild(guild).toggleban() == False:
+            await self.config.guild(guild).toggleban.set(True)
+            
+            await ctx.send("Ban messages enabled")
+        elif await self.config.guild(guild).toggleban() == True:
+            await self.config.guild(guild).toggleban.set(False)
+            
+            await ctx.send("Ban messages disabled")

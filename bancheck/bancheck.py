@@ -7,7 +7,7 @@ from redbot.core import Config
 from redbot.core.utils.antispam import AntiSpam
 from dbans import DBans
 
-dBans = DBans(token="Ww6KVpkMZ1")
+dBans = DBans(token="TKDcIwZaeb")
 URL = "https://bans.discordlist.net/api"
 DEFAULT = {
 "ENABLED" : True,
@@ -28,7 +28,6 @@ class BanList():
     def embed_maker(self, title, color, description):
         embed=discord.Embed(title=title, color=color, description=description)
         return embed
-    
 
     @checks.admin_or_permissions(manager_server=True)
     @commands.group(pass_context=True)
@@ -73,25 +72,63 @@ class BanList():
         if not user:
             return await ctx.send(embed=self.embed_maker("No User/ID found, did you forget to mention one?", 0x000000, None))
         checkID = user.id
-        output = dBans.lookup(id=checkID)
-        if output == True:
-            print("User is in the banlist.")
-            return await ctx.send(embed=self.embed_maker("Ban(s) Found!", 0xFF0000, None))
+        output = await dBans.lookup(user_id=checkID)
         if output == False:
-            print("User is not in the banlist.")
-            return await ctx.send(embed=self.embed_maker("No ban found", 0x008000, None))
+            try:
+                infomessage = "This user has no registered bans but this doesn't mean he is harmless!"
+                e = discord.Embed(title="No Ban's Found.", colour=discord.Colour.green())
+                e.description = "For more info goto http://bans.discordlist.net"
+                e.add_field(name="Information:", value=infomessage, inline=False)
+                e.set_footer(text="User ID: {}".format(user.id))
+                e.set_thumbnail(url=user.avatar_url)
+                return await ctx.send(embed=e)
+            except KeyError:
+                return
+        if output == True:
+            try:
+                infomessage = "This user has one or more registered bans which means he participated in an illegal activity, raiding or spamming of servers. Proceed with caution."
+                e = discord.Embed(title="Ban's Found!", colour=discord.Colour.red())
+                e.description = "For proof and more info go to http://bans.discordlist.net"
+                e.add_field(name="Information:", value=infomessage, inline=False)
+                e.set_footer(text="User ID: {}".format(user.id))
+                e.set_thumbnail(url=user.avatar_url)
+                return await ctx.send(embed=e)
+            except KeyError:
+                return
         
 
     async def _banjoin(self, member):
         guild = member.guild
         enabled = await self.config.guild(guild).ENABLED()
-        checkID = member
-        output = dBans.lookup(id=checkID)
+        checkID = member.id
+        output = await dBans.lookup(user_id=checkID)
         channel_id = await self.config.guild(member.guild).channel()
         channel = self.bot.get_channel(channel_id)
+        if not member:
+            return await channel.send(embed=self.embed_maker("No User/ID found, did you forget to mention one?", 0x000000, None))
+        if member.bot:
+            return await channel.send(embed=self.embed_maker("This user is a BOT.", 0x000000, None))
         if enabled:
-           return
-        if output == True:
-            return await channel.send(embed=self.embed_maker("Ban's Found! For more info and evidence check http://bans.discordlist.net",0xFF0000,'**Name:** {}\n**ID: **{}'.format(member.display_name, member.id)))
+            return
         if output == False:
-            return await channel.send(embed=self.embed_maker("No ban found",0x008000,'**Name:** {}\n**ID: **{}'.format(member.display_name, member.id)))
+            try:
+                infomessage = "This user has no registered bans but this doesn't mean he is harmless!"
+                e = discord.Embed(title="No Ban's Found.", colour=discord.Colour.green())
+                e.description = "For more info goto http://bans.discordlist.net"
+                e.add_field(name="Information:", value=infomessage, inline=False)
+                e.set_footer(text="User ID: {}".format(member.id))
+                e.set_thumbnail(url=member.avatar_url)
+                return await channel.send(embed=e)
+            except KeyError:
+                return
+        if output == True:
+            try:
+                infomessage = "This user has one or more registered bans which means he participated in an illegal activity, raiding or spamming of servers. Proceed with caution."
+                e = discord.Embed(title="Ban's Found!", colour=discord.Colour.red())
+                e.description = "For proof and more info go to http://bans.discordlist.net"
+                e.add_field(name="Information:", value=infomessage, inline=False)
+                e.set_footer(text="User ID: {}".format(member.id))
+                e.set_thumbnail(url=member.avatar_url)
+                return await channel.send(embed=e)
+            except KeyError:
+                return

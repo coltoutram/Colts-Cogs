@@ -6,6 +6,7 @@ They're all v3 cogs and don't look at the develop branch as its just for testing
 - actionlogs:     Modlogs/Logs a lot of stuff (Renamed from modlogs because it doesnt work with the original modlog cog).
 - autorole:       Automatically give members who join the server a specified role.
 - bancheck:       Checks if users are banned on bans.discordlist.net.
+- massmove:       Move everyone in a voice channel to another voice channel.
 - penis:          Explains itself.
 - playskip:       Plays and skips.
 - ping-time:      Pings and shows the time.

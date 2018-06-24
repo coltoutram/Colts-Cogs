@@ -60,9 +60,7 @@ class Actionlogs:
     async def _channel(self, ctx):
         """Set the channel to send notifications too"""
         guild = ctx.message.guild
-        # print(guild)
         if ctx.message.guild.me.permissions_in(ctx.message.channel).send_messages:
-            # print(await self.config.guild(guild).Channel())
             if await self.config.guild(guild).Channel() is not None:
                 await self.config.guild(guild).Channel.set(ctx.message.channel.id)
                 await ctx.send("Channel changed.")
@@ -273,7 +271,7 @@ class Actionlogs:
     async def on_member_join(self, member):
         guild = member.guild
         
-        if await self.config.guild(guild).toggljoin() == False:
+        if await self.config.guild(guild).togglejoin() == False:
             return
         channel = await self.config.guild(guild).Channel()
         if channel is None:
@@ -284,8 +282,8 @@ class Actionlogs:
         if await self.config.guild(guild).embed() == True:
             name = member
             # name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
-            joinmsg = discord.Embed(description=member.mention, colour=discord.Color.red(), timestamp=member.joined_at)
-            # infomessage = "Total Users: {}".format(users)
+            joinmsg = discord.Embed(description=member.mention, colour=discord.Color.green(), timestamp=member.joined_at)
+            infomessage = "Total Users: {}".format(users)
             joinmsg.add_field(name="Total Users:", value=str(users), inline=True)
             joinmsg.set_footer(text="User ID: {}".format(member.id), icon_url=member.avatar_url)
             joinmsg.set_author(name=name.display_name + " has joined the guild",url=member.avatar_url, icon_url=member.avatar_url)
@@ -483,14 +481,14 @@ class Actionlogs:
             name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
             
             infomessage = "A message by {}, was edited in {}".format(before.author.mention, before.channel.mention)
-            delmessage = discord.Embed(description=infomessage, colour=discord.Color.green(), timestamp=after.created_at)
+            delmessage = discord.Embed(description=infomessage, colour=discord.Color.blue(), timestamp=after.created_at)
             delmessage.add_field(name="Before Message:", value=cleanbefore, inline=False)
             delmessage.add_field(name="After Message:", value=cleanafter)
             delmessage.set_footer(text="User ID: {}".format(before.author.id), icon_url=before.author.avatar_url)
             delmessage.set_author(name=name + " - Edited Message", url="http://i.imgur.com/Q8SzUdG.png", icon_url=before.author.avatar_url)
-            delmessage.set_thumbnail(url="http://i.imgur.com/Q8SzUdG.png")
+            delmessage.set_thumbnail(url="https://i.coltoutram.nl/edit-blue.png")
             try:
-                await guild.get_channel(channel).send( embed=delmessage)
+                await guild.get_channel(channel).send(embed=delmessage)
             except:
                 pass
         else:
@@ -566,12 +564,12 @@ class Actionlogs:
             if await self.config.guild(guild).embed() == True:
                 name = after
                 name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
-                role = discord.Embed(colour=discord.Color.red(), timestamp=time)
+                role = discord.Embed(colour=discord.Color.orange(), timestamp=time)
                 role.add_field(name="Roles Before:", value=" ,".join(role.name for role in before.roles), inline=False)
                 role.add_field(name="Roles After:", value=" ,".join(role.name for role in after.roles), inline=False)
                 role.set_footer(text="User ID: {}".format(after.id), icon_url=after.avatar_url)
                 role.set_author(name=name + " - Updated Roles", icon_url=after.avatar_url)
-                # role.set_thumbnail(after)
+                role.set_thumbnail(url="https://i.coltoutram.nl/edit-orange.png")
                 try:
                     await guild.get_channel(channel).send( embed=role)
                 except:
@@ -587,12 +585,12 @@ class Actionlogs:
                 name = before
                 name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
                 infomessage = "{}'s nickname has changed".format(before.mention)
-                updmessage = discord.Embed(description=infomessage, colour=discord.Color.orange(), timestamp=time)
+                updmessage = discord.Embed(description=infomessage, colour=discord.Color.blue(), timestamp=time)
                 updmessage.add_field(name="Nickname Before:", value=before.nick)
                 updmessage.add_field(name="Nickname After:", value=after.nick)
                 updmessage.set_footer(text="User ID: {}".format(before.id), icon_url=after.avatar_url)
                 updmessage.set_author(name=name + " - Nickname Changed", icon_url=after.avatar_url)
-                # updmessage.set_thumbnail(url="http://i.imgur.com/I5q71rj.png")
+                updmessage.set_thumbnail(url="http://i.imgur.com/I5q71rj.png")
                 try:
                     await guild.get_channel(channel).send( embed=updmessage)
                 except:

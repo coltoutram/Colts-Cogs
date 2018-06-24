@@ -77,6 +77,7 @@ class BanList():
             try:
                 infomessage = "This user has no registered bans but this doesn't mean he is harmless!"
                 e = discord.Embed(title="No Ban's Found.", colour=discord.Colour.green())
+                e.set_author(name=user, icon_url=user.avatar_url)
                 e.description = "For more info goto http://bans.discordlist.net"
                 e.add_field(name="Information:", value=infomessage, inline=False)
                 e.set_footer(text="User ID: {}".format(user.id))
@@ -88,6 +89,7 @@ class BanList():
             try:
                 infomessage = "This user has one or more registered bans which means he participated in an illegal activity, raiding or spamming of servers. Proceed with caution."
                 e = discord.Embed(title="Ban's Found!", colour=discord.Colour.red())
+                e.set_author(name=user, icon_url=user.avatar_url)
                 e.description = "For proof and more info go to http://bans.discordlist.net"
                 e.add_field(name="Information:", value=infomessage, inline=False)
                 e.set_footer(text="User ID: {}".format(user.id))
@@ -114,6 +116,7 @@ class BanList():
             try:
                 infomessage = "This user has no registered bans but this doesn't mean he is harmless!"
                 e = discord.Embed(title="No Ban's Found.", colour=discord.Colour.green())
+                e.set_author(name=member, icon_url=member.avatar_url)
                 e.description = "For more info goto http://bans.discordlist.net"
                 e.add_field(name="Information:", value=infomessage, inline=False)
                 e.set_footer(text="User ID: {}".format(member.id))
@@ -125,6 +128,7 @@ class BanList():
             try:
                 infomessage = "This user has one or more registered bans which means he participated in an illegal activity, raiding or spamming of servers. Proceed with caution."
                 e = discord.Embed(title="Ban's Found!", colour=discord.Colour.red())
+                e.set_author(name=member, icon_url=member.avatar_url)
                 e.description = "For proof and more info go to http://bans.discordlist.net"
                 e.add_field(name="Information:", value=infomessage, inline=False)
                 e.set_footer(text="User ID: {}".format(member.id))

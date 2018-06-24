@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-import aiohttp
 import re
 import os
 from redbot.core import checks
@@ -29,13 +28,7 @@ class BanList():
     def embed_maker(self, title, color, description):
         embed=discord.Embed(title=title, color=color, description=description)
         return embed
-
-    async def lookup(self, user):
-        async with aiohttp.ClientSession() as ses:
-            resp = await self.session.post(URL, data=self.payload(user))
-            final = await resp.json()
-            resp.close()
-            return final
+    
 
     @checks.admin_or_permissions(manager_server=True)
     @commands.group(pass_context=True)
@@ -98,7 +91,7 @@ class BanList():
         channel = self.bot.get_channel(channel_id)
         if enabled:
            return
-        if output == False:
-            return await channel.send(embed=self.embed_maker("Ban's Found! For more info and evidence check http://bans.discordlist.net",0xFF0000,'**Name:** {}\n**ID: **{}'.format(member.display_name, member.id)))
         if output == True:
+            return await channel.send(embed=self.embed_maker("Ban's Found! For more info and evidence check http://bans.discordlist.net",0xFF0000,'**Name:** {}\n**ID: **{}'.format(member.display_name, member.id)))
+        if output == False:
             return await channel.send(embed=self.embed_maker("No ban found",0x008000,'**Name:** {}\n**ID: **{}'.format(member.display_name, member.id)))

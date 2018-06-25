@@ -592,7 +592,7 @@ class Actionlogs:
                 role.add_field(name="Roles After:", value=" ,".join(role.name for role in after.roles), inline=False)
                 role.set_footer(text="User ID: {}".format(after.id), icon_url=after.avatar_url)
                 role.set_author(name=name + " - Updated Roles", icon_url=after.avatar_url)
-                role.set_thumbnail(url="https://i.coltoutram.nl/edit-orange.png")
+                role.set_thumbnail(url="https://i.coltoutram.nl/update-orange.png") # https://i.coltoutram.nl/credits.txt
                 try:
                     await guild.get_channel(channel).send( embed=role)
                 except:

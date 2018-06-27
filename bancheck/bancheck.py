@@ -100,7 +100,7 @@ class BanList():
         guild = member.guild
         enabled = await self.config.guild(guild).ENABLED()
         checkID = member.id
-        output = await dBans.lookup(user_id=checkID)
+        is_banned = await dBans.lookup(user_id=checkID)
         channel_id = await self.config.guild(member.guild).channel()
         channel = self.bot.get_channel(channel_id)
         if not member:
@@ -109,7 +109,7 @@ class BanList():
             return await channel.send(embed=self.embed_maker("This user is a BOT.", 0x000000, None))
         if enabled:
             return
-        if output:
+        if is_banned:
             try:
                 infomessage = "This user has one or more registered bans which means he participated in an illegal activity, raiding or spamming of servers. Proceed with caution."
                 e = discord.Embed(title="Ban's Found!", colour=discord.Colour.red())

@@ -264,8 +264,6 @@ class Actionlogs:
             delmessage.set_thumbnail(url="http://i.imgur.com/fJpAFgN.png")
             try:
                 await guild.get_channel(channel).send( embed=delmessage)
-            except AttributeError:
-                return
             except:
                 pass
 
@@ -339,8 +337,6 @@ class Actionlogs:
                 await guild.get_channel(channel).send(embed=name)
             except:
                 pass
-            except AttributeError:
-                return
 
 
     async def on_message_edit(self, before, after):

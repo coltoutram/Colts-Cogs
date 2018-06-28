@@ -238,7 +238,8 @@ class Actionlogs:
 
     async def on_message_delete(self, message):
         guild = message.guild
-        
+        if message.channel == 448604074171170826:
+            return
         if await self.config.guild(guild).Channel() is None:
             return
         if await self.config.guild(guild).toggledelete() == False:
@@ -263,7 +264,7 @@ class Actionlogs:
             delmessage.set_author(name=name + " - Deleted Message", url="http://i.imgur.com/fJpAFgN.png", icon_url=message.author.avatar_url)
             delmessage.set_thumbnail(url="http://i.imgur.com/fJpAFgN.png")
             try:
-                await guild.get_channel(channel).send( embed=delmessage)
+                await guild.get_channel(channel).send(embed=delmessage)
             except AttributeError:
                 return
             except:

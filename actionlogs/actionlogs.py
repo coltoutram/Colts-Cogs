@@ -6,12 +6,14 @@ import discord
 import asyncio
 import os
 from random import choice, randint
+from enum import Enum
 
-inv_settings = {"embed": True, "Channel": None, "toggleedit": False, "toggledelete": False, "toggleuser": False,
+
+inv_settings = {"Channel": None, "toggleedit": False, "toggledelete": False, "toggleuser": False,
                 "toggleroles": False,
                 "togglevoice": False,
                 "toggleban": False, "togglejoin": False, "toggleleave": False, "togglechannel": False,
-                "toggleguild": False}
+                "toggleguild": False, "toggleunban": False,}
 
 
 class Actionlogs:
@@ -44,6 +46,7 @@ class Actionlogs:
                 e.add_field(name="Leave", value=str(await self.config.guild(guild).toggleleave()))
                 e.add_field(name="Channel", value=str(await self.config.guild(guild).togglechannel()))
                 e.add_field(name="guild", value=str(await self.config.guild(guild).toggleguild()))
+                e.add_field(name="Unban", value=str(await self.config.guild(guild).toggleunban()))
                 e.set_thumbnail(url=guild.icon_url)
                 await ctx.send(embed=e)
             except KeyError:
@@ -70,19 +73,6 @@ class Actionlogs:
                 await ctx.send("I will now send toggled actionlogs notifications here")
         else:
             return
-
-    @actionlogset.command(pass_context=True, no_pm=True)
-    async def embed(self, ctx):
-        """Enables or disables embed actionlogs."""
-        guild = ctx.message.guild
-        if await self.config.guild(guild).embed() == False:
-            await self.config.guild(guild).embed.set(True)
-            
-            await ctx.send("Enabled embed actionlogs.")
-        elif await self.config.guild(guild).embed() == True:
-            await self.config.guild(guild).embed.set(False)
-            
-            await ctx.send("Disabled embed actionlogs.")
 
     @actionlogset.command(pass_context=True, no_pm=True)
     async def disable(self, ctx):
@@ -232,6 +222,20 @@ class Actionlogs:
             
             await ctx.send("Ban messages disabled")
 
+    @actionlogtoggles.command(pass_context=True, no_pm=True)
+    async def unban(self, ctx):
+        """toggle notifications when a user is unbanned"""
+        guild = ctx.message.guild
+        
+        if await self.config.guild(guild).toggleunban() == False:
+            await self.config.guild(guild).toggleunban.set(True)
+            
+            await ctx.send("Ban messages enabled")
+        elif await self.config.guild(guild).toggleunban() == True:
+            await self.config.guild(guild).toggleunban.set(False)
+            
+            await ctx.send("Unban messages disabled")
+
     async def on_message_delete(self, message):
         guild = message.guild
         
@@ -242,14 +246,14 @@ class Actionlogs:
         if message.author is message.author.bot:
             pass
         channel = await self.config.guild(guild).Channel()
-        if channel is None:
-            return
         time = datetime.datetime.utcnow()
         cleanmsg = message.content
         for i in message.mentions:
             cleanmsg = cleanmsg.replace(i.mention, str(i))
         fmt = '%H:%M:%S'
-        if await self.config.guild(guild).embed() == True:
+        if channel is None:
+            return
+        else:
             name = message.author
             name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
             infomessage = "A message by {}, was deleted in {}".format(message.author.mention, message.channel.mention)
@@ -260,13 +264,10 @@ class Actionlogs:
             delmessage.set_thumbnail(url="http://i.imgur.com/fJpAFgN.png")
             try:
                 await guild.get_channel(channel).send( embed=delmessage)
+            except AttributeError:
+                return
             except:
                 pass
-        else:
-            msg = ":pencil: `{}` **Channel** {} **{}'s** message has been deleted. Content: {}".format(
-                time.strftime(fmt), message.channel.mention, message.author, cleanmsg)
-            await guild.get_channel(channel).send(
-                                        msg)
 
     async def on_member_join(self, member):
         guild = member.guild
@@ -279,23 +280,18 @@ class Actionlogs:
         time = datetime.datetime.utcnow()
         fmt = '%H:%M:%S'
         users = len([e.name for e in guild.members])
-        if await self.config.guild(guild).embed() == True:
-            name = member
-            # name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
-            joinmsg = discord.Embed(description=member.mention, colour=discord.Color.green(), timestamp=member.joined_at)
-            infomessage = "Total Users: {}".format(users)
-            joinmsg.add_field(name="Total Users:", value=str(users), inline=True)
-            joinmsg.set_footer(text="User ID: {}".format(member.id), icon_url=member.avatar_url)
-            joinmsg.set_author(name=name.display_name + " has joined the guild",url=member.avatar_url, icon_url=member.avatar_url)
-            joinmsg.set_thumbnail(url=member.avatar_url)
-            try:
-                await guild.get_channel(channel).send( embed=joinmsg)
-            except:
-                pass
-        if await self.config.guild(guild).embed() == False:
-            msg = ":white_check_mark: `{}` **{}** join the guild. Total users: {}.".format(time.strftime(fmt),
-                                                                                            member.name, users)
-            await guild.get_channel(channel).send( msg)
+        name = member
+        joinmsg = discord.Embed(description=member.mention, colour=discord.Color.green(), timestamp=member.joined_at)
+        infomessage = "Total Users: {}".format(users)
+        joinmsg.add_field(name="Total Users:", value=str(users), inline=True)
+        joinmsg.set_footer(text="User ID: {}".format(member.id), icon_url=member.avatar_url)
+        joinmsg.set_author(name=name.display_name + " has joined the guild",url=member.avatar_url, icon_url=member.avatar_url)
+        joinmsg.set_thumbnail(url=member.avatar_url)
+        try:
+            await guild.get_channel(channel).send(embed=joinmsg)
+        except:
+            pass
+
 
     async def on_member_remove(self, member):
         guild = member.guild
@@ -308,153 +304,44 @@ class Actionlogs:
         time = datetime.datetime.utcnow()
         fmt = "%H:%M:%S"
         users = len([e.name for e in guild.members])
-        if await self.config.guild(guild).embed() == True:
-            name = member
-            # name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
-            joinmsg = discord.Embed(description=member.mention, colour=discord.Color.red(), timestamp=time)
-            # infomessage = "Total Users: {}".format(users)
-            joinmsg.add_field(name="Total Users:", value=str(users), inline=True)
-            joinmsg.set_footer(text="User ID: {}".format(member.id), icon_url=member.avatar_url)
-            joinmsg.set_author(name=name.display_name + " has left the guild",url=member.avatar_url, icon_url=member.avatar_url)
-            joinmsg.set_thumbnail(url=member.avatar_url)
-            try:
-                await guild.get_channel(channel).send( embed=joinmsg)
-            except:
-                pass
-        if await self.config.guild(guild).embed() == False:
-            msg = ":x: `{}` **{}** has left the guild or was kicked. Total members {}.".format(time.strftime(fmt),
-                                                                                                member.name, users)
-            await guild.get_channel(channel).send( msg)
+        name = member
+        joinmsg = discord.Embed(description=member.mention, colour=discord.Color.red(), timestamp=time)
+        infomessage = "Total Users: {}".format(users)
+        joinmsg.add_field(name="Total Users:", value=str(users), inline=True)
+        joinmsg.set_footer(text="User ID: {}".format(member.id), icon_url=member.avatar_url)
+        joinmsg.set_author(name=name.display_name + " has left the guild",url=member.avatar_url, icon_url=member.avatar_url)
+        joinmsg.set_thumbnail(url=member.avatar_url)
+        try:
+            await guild.get_channel(channel).send(embed=joinmsg)
+        except:
+            pass
 
-    async def on_channel_update(self, before, after):
+
+    async def on_guild_channel_update(self, before, after):
         guild = before.guild
-    
         if await self.config.guild(guild).togglechannel() == False:
-            return
+            return  
         channel = await self.config.guild(guild).Channel()
         if channel is None:
-            return
+            return   
         time = datetime.datetime.utcnow()
         fmt = "%H:%M:%S"
         msg = ""
         if before.name != after.name:
-            if before.type == discord.ChannelType.voice:
-                if await self.config.guild(guild).embed() == True:
-                    fmt = "%H:%M:%S"
-                    voice1 = discord.Embed(colour=discord.Color.blue(), timestamp=time)
-                    infomessage = ":loud_sound: Voice channel name update. Before: **{}** After: **{}**.".format(
-                        before.name, after.name)
-                    voice1.add_field(name="Info:", value=infomessage, inline=False)
-                    voice1.set_author(name=time.strftime(fmt) + " - Voice Channel Update",
-                                      icon_url="http://www.hey.fr/fun/emoji/twitter/en/icon/twitter/565-emoji_twitter_speaker_with_three_sound_waves.png")
-                    voice1.set_thumbnail(
-                        url="http://www.hey.fr/fun/emoji/twitter/en/icon/twitter/565-emoji_twitter_speaker_with_three_sound_waves.png")
-                    try:
-                        await guild.get_channel(channel).send(embed=voice1)
-                    except:
-                        pass
-                else:
-                    fmt = "%H:%M:%S"
-                    await guild.get_channel(channel).send(
-                                                ":loud_sound: `{}` Voice channel name update. Before: **{}** After: **{}**.".format(
-                                                    time.strftime(fmt), before.name, after.name))
-            if before.type == discord.ChannelType.text:
-                if await self.config.guild(guild).embed() == True:
-                    fmt = "%H:%M:%S"
-                    text1 = discord.Embed(colour=discord.Color.blue(), timestamp=time)
-                    infomessage = ":loud_sound: Text channel name update. Before: **{}** After: **{}**.".format(
-                        before.name, after.name)
-                    text1.add_field(name="Info:", value=infomessage, inline=False)
-                    text1.set_author(name=time.strftime(fmt) + " - Voice Channel Update",
-                                     icon_url="https://s-media-cache-ak0.pinimg.com/originals/27/18/77/27187782801d15f756a27156105d1233.png")
-                    text1.set_thumbnail(
-                        url="https://s-media-cache-ak0.pinimg.com/originals/27/18/77/27187782801d15f756a27156105d1233.png")
-                    await guild.get_channel(channel).send(embed=text1)
-                else:
-                    fmt = "%H:%M:%S"
-                    await guild.get_channel(channel).send(
-                                                ":page_facing_up: `{}` Text channel name update. Before: **{}** After: **{}**.".format(
-                                                    time.strftime(fmt), before.name, after.name))
-        if before.topic != after.topic:
-            if await self.config.guild(guild).embed() == True:
-                fmt = "%H:%M:%S"
-                topic = discord.Embed(colour=discord.Colour.blue(), timestamp=time)
-                infomessage = ":page_facing_up: `{}` Channel topic has been updated.\n**Before:** {}\n**After:** {}".format(
-                    time.strftime(fmt), before.topic, after.topic)
-                topic.add_field(name="Info:", value=infomessage, inline=False)
-                topic.set_author(name=time.strftime(fmt) + " - Channel Topic Update",
-                                 icon_url="https://s-media-cache-ak0.pinimg.com/originals/27/18/77/27187782801d15f756a27156105d1233.png")
-                topic.set_thumbnail(
-                    url="https://s-media-cache-ak0.pinimg.com/originals/27/18/77/27187782801d15f756a27156105d1233.png")
-                try:
-                    await self.send_message(guild.get_channel(channel), embed=topic)
-                except:
-                    pass
-            else:
-                fmt = "%H:%M:%S"
-                await guild.get_channel(channel).send(
-                                            ":page_facing_up: `{}` Channel topic has been updated.\n**Before:** {}\n**After:** {}".format(
-                                                time.strftime(fmt), before.topic, after.topic))
-        if before.position != after.position:
-            if before.type == discord.ChannelType.voice:
-                if await self.config.guild(guild).embed() == True:
-                    fmt = "%H:%M:%S"
-                    voice2 = discord.Embed(colour=discord.Colour.blue(), timestamp=time)
-                    voice2.set_thumbnail(
-                        url="http://www.hey.fr/fun/emoji/twitter/en/icon/twitter/565-emoji_twitter_speaker_with_three_sound_waves.png")
-                    voice2.set_author(name=time.strftime(fmt) + " Voice Channel Position Update",
-                                      icon_url="http://www.hey.fr/fun/emoji/twitter/en/icon/twitter/565-emoji_twitter_speaker_with_three_sound_waves.png")
-                    infomsg = ":loud_sound: Voice channel position update. Channel: **{}** Before: **{}** After: **{}**.".format(
-                        before.name, before.position, after.position)
-                    voice2.add_field(name="Info:", value=infomsg, inline=False)
-                    try:
-                        await guild.get_channel(channel).send(embed=voice2)
-                    except:
-                        pass
-                else:
-                    fmt = "%H:%M:%S"
-                    await guild.get_channel(channel).send(
-                                                ":loud_sound: `{}` Voice channel position update. Channel: **{}** Before: **{}** After: **{}**.".format(
-                                                    time.strftime(fmt), before.name, before.position, after.position))
-            if before.type == discord.ChannelType.text:
-                if await self.config.guild(guild).embed() == True:
-                    fmt = "%H:%M:%S"
-                    text2 = discord.Embed(colour=discord.Colour.blue(), timestamp=time)
-                    text2.set_thumbnail(
-                        url="https://s-media-cache-ak0.pinimg.com/originals/27/18/77/27187782801d15f756a27156105d1233.png")
-                    text2.set_author(name=time.strftime(fmt) + " Text Channel Position Update",
-                                     icon_url="https://s-media-cache-ak0.pinimg.com/originals/27/18/77/27187782801d15f756a27156105d1233.png")
-                    infomsg = ":page_facing_up: Text channel position update. Before: **{}** After: **{}**.".format(
-                        before.position, after.position)
-                    text2.add_field(name="Info:", value=infomsg, inline=False)
-                    try:
-                        await guild.get_channel(channel).send(embed=text2)
-                    except:
-                        pass
-                else:
-                    fmt = "%H:%M:%S"
-                    await guild.get_channel(channel).send(
-                                                ":page_facing_up: `{}` Text channel position update. Channel: **{}** Before: **{}** After: **{}**.".format(
-                                                    time.strftime(fmt), before.name, before.position, after.position))
-        if before.bitrate != after.bitrate:
-            if await self.config.guild(guild).embed() == True:
-                fmt = "%H:%M:%S"
-                bitrate = discord.Embed(colour=discord.Colour.blue(), timestamp=time)
-                bitrate.set_author(name=time.strftime(fmt) + " Voice Channel Bitrate Update",
-                                   icon_url="http://www.hey.fr/fun/emoji/twitter/en/icon/twitter/565-emoji_twitter_speaker_with_three_sound_waves.png")
-                bitrate.set_thumbnail(
-                    url="http://www.hey.fr/fun/emoji/twitter/en/icon/twitter/565-emoji_twitter_speaker_with_three_sound_waves.png")
-                infomsg = ":loud_sound: Voice Channel bitrate update. Before: **{}** After: **{}**.".format(
-                    before.bitrate, after.bitrate)
-                bitrate.add_field(name="Info:", value=infomsg, inline=False)
-                try:
-                    await ctx.send(guild.get_channel(channel), embed=bitrate)
-                except:
-                    pass
-            else:
-                await guild.get_channel(channel).send(
-                                            ":loud_sound: `{}` Channel bitrate update. Before: **{}** After: **{}**.".format(
-                                                time.strftime(fmt), before.bitrate, after.bitrate))
+            fmt = "%H:%M:%S"
+            name = discord.Embed(colour=discord.Color.blue(), timestamp=time)
+            infomessage = "Channel name update. Before: **{}** After: **{}**.".format(
+                before.name, after.name)
+            name.add_field(name="Info:", value=infomessage, inline=False)
+            name.set_author(name=time.strftime(fmt) + " - Channel Update")
+            name.set_thumbnail(url="https://i.coltoutram.nl/edit-blue.png")
+            try:
+                await guild.get_channel(channel).send(embed=name)
+            except:
+                pass
+            except AttributeError:
+                return
+
 
     async def on_message_edit(self, before, after):
         guild = before.guild
@@ -476,29 +363,22 @@ class Actionlogs:
             return
         time = datetime.datetime.utcnow()
         fmt = '%H:%M:%S'
-        if await self.config.guild(guild).embed() == True:
-            name = before.author
-            name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
-            
-            infomessage = "A message by {}, was edited in {}".format(before.author.mention, before.channel.mention)
-            delmessage = discord.Embed(description=infomessage, colour=discord.Color.blue(), timestamp=after.created_at)
-            delmessage.add_field(name="Before Message:", value=cleanbefore, inline=False)
-            delmessage.add_field(name="After Message:", value=cleanafter)
-            delmessage.set_footer(text="User ID: {}".format(before.author.id), icon_url=before.author.avatar_url)
-            delmessage.set_author(name=name + " - Edited Message", url="http://i.imgur.com/Q8SzUdG.png", icon_url=before.author.avatar_url)
-            delmessage.set_thumbnail(url="https://i.coltoutram.nl/edit-blue.png")
-            try:
-                await guild.get_channel(channel).send(embed=delmessage)
-            except:
-                pass
-        else:
-            msg = ":pencil: `{}` **Channel**: {} **{}'s** message has been edited.\nBefore: {}\nAfter: {}".format(
-                time.strftime(fmt), before.channel.mention, before.author, cleanbefore, cleanafter)
-            await guild.get_channel(channel).send(msg)
+        name = before.author
+        name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
+        infomessage = "A message by {}, was edited in {}".format(before.author.mention, before.channel.mention)
+        delmessage = discord.Embed(description=infomessage, colour=discord.Color.blue(), timestamp=after.created_at)
+        delmessage.add_field(name="Before Message:", value=cleanbefore, inline=False)
+        delmessage.add_field(name="After Message:", value=cleanafter)
+        delmessage.set_footer(text="User ID: {}".format(before.author.id), icon_url=before.author.avatar_url)
+        delmessage.set_author(name=name + " - Edited Message", url="http://i.imgur.com/Q8SzUdG.png", icon_url=before.author.avatar_url)
+        delmessage.set_thumbnail(url="https://i.coltoutram.nl/edit-blue.png")
+        try:
+            await guild.get_channel(channel).send(embed=delmessage)
+        except:
+            pass
 
     async def on_guild_update(self, before, after):
         guild = before
-        
         if await self.config.guild(guild).toggleguild() == False:
             return
         channel = await self.config.guild(guild).Channel()
@@ -529,50 +409,46 @@ class Actionlogs:
             return
         time = datetime.datetime.utcnow()
         fmt = '%H:%M:%S'
-        if await self.config.guild(guild).embed() == True: 
-            if before.channel is None:
-                name = member
-                name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
-                updmessage = discord.Embed(description=name, colour=discord.Color.blue(), timestamp=time)
-                updmessage.add_field(name="has joined voice channel:", value=after.channel)
-                updmessage.set_footer(text="User ID: {}".format(member.id))
-                updmessage.set_author(name=time.strftime(fmt) + " - Voice Channel Changed",
-                                    url="http://i.imgur.com/8gD34rt.png")
-                try:
-                    return await guild.get_channel(channel).send( embed=updmessage)
-                except:
-                    pass
+        if before.channel is None:
+            name = member
+            name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
+            updmessage = discord.Embed(description=name, colour=discord.Color.blue(), timestamp=time)
+            updmessage.add_field(name="User has joined voice channel:", value=after.channel)
+            updmessage.set_footer(text="User ID: {}".format(member.id))
+            updmessage.set_author(name=time.strftime(fmt) + " - Voice Channel Changed",
+                                url="http://i.imgur.com/8gD34rt.png")
+            updmessage.set_thumbnail(url="https://i.coltoutram.nl/speaker-light-blue.png") # https://coltoutram.nl/credits.txt
+            try:
+                return await guild.get_channel(channel).send(embed=updmessage)
+            except:
+                pass
 
-            elif after.channel is None:
-                name = member
-                name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
-                updmessage = discord.Embed(description=name, colour=discord.Color.blue(), timestamp=time)
-                updmessage.add_field(name="has left voice channel:", value=before.channel)
-                updmessage.set_footer(text="User ID: {}".format(member.id))
-                updmessage.set_author(name=time.strftime(fmt) + " - Voice Channel Changed",
-                                    url="http://i.imgur.com/8gD34rt.png")
-                try:
-                    return await guild.get_channel(channel).send( embed=updmessage)
-                except:
-                    pass
-            else:
-                name = member
-                name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
-                updmessage = discord.Embed(description=name, colour=discord.Color.blue(), timestamp=time)
-                updmessage.add_field(name="Changed to voice channel:", value=after.channel)
-                updmessage.set_footer(text="User ID: {}".format(member.id))
-                updmessage.set_author(name=time.strftime(fmt) + " - Voice Channel Changed",
-                                    url="http://i.imgur.com/8gD34rt.png")
-                try:
-                    await guild.get_channel(channel).send( embed=updmessage)
-                except:
-                    pass
-                else:  
-                    await guild.get_channel(channel).send(
-                        ":person_with_pouting_face::skin-tone-3: `{}` **Channel**: {}\n**Local Mute:** {} **Local Deaf:** {} **guild Mute:** {} **guild Deaf:** {}".format(
-                        time.strftime(fmt), after.name, after.voice_channel, after.self_mute,
-                        after.self_deaf, after.mute, after.deaf))
-
+        elif after.channel is None:
+            name = member
+            name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
+            updmessage = discord.Embed(description=name, colour=discord.Color.blue(), timestamp=time)
+            updmessage.add_field(name="User has left voice channel:", value=before.channel)
+            updmessage.set_footer(text="User ID: {}".format(member.id))
+            updmessage.set_author(name=time.strftime(fmt) + " - Voice Channel Changed",
+                                url="http://i.imgur.com/8gD34rt.png")
+            updmessage.set_thumbnail(url="https://i.coltoutram.nl/speaker-light-blue.png") # https://coltoutram.nl/credits.txt
+            try:
+                return await guild.get_channel(channel).send(embed=updmessage)
+            except:
+                pass
+        else:
+            name = member
+            name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
+            updmessage = discord.Embed(description=name, colour=discord.Color.blue(), timestamp=time)
+            updmessage.add_field(name="Changed to voice channel:", value=after.channel)
+            updmessage.set_footer(text="User ID: {}".format(member.id))
+            updmessage.set_author(name=time.strftime(fmt) + " - Voice Channel Changed",
+                                url="http://i.imgur.com/8gD34rt.png")
+            updmessage.set_thumbnail(url="https://i.coltoutram.nl/speaker-light-blue.png") # https://coltoutram.nl/credits.txt
+            try:
+                await guild.get_channel(channel).send(embed=updmessage)
+            except:
+                pass
 
 
     async def on_member_update(self, before, after):
@@ -584,72 +460,71 @@ class Actionlogs:
         time = datetime.datetime.utcnow()
         fmt = '%H:%M:%S'
         if not before.roles == after.roles and await self.config.guild(guild).toggleroles():
-            if await self.config.guild(guild).embed() == True:
-                name = after
-                name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
-                role = discord.Embed(colour=discord.Color.orange(), timestamp=time)
-                role.add_field(name="Roles Before:", value=" ,".join(role.name for role in before.roles), inline=False)
-                role.add_field(name="Roles After:", value=" ,".join(role.name for role in after.roles), inline=False)
-                role.set_footer(text="User ID: {}".format(after.id), icon_url=after.avatar_url)
-                role.set_author(name=name + " - Updated Roles", icon_url=after.avatar_url)
-                role.set_thumbnail(url="https://i.coltoutram.nl/update-orange.png") # https://i.coltoutram.nl/credits.txt
-                try:
-                    await guild.get_channel(channel).send( embed=role)
-                except:
-                    pass
-            if await self.config.guild(guild).embed() == False:
-                msg = ":person_with_pouting_face::skin-tone-3: `{}` **{}'s** roles have changed. Old: `{}` New: `{}`".format(
-                    time.strftime(fmt), before.name, ", ".join([r.name for r in before.roles]),
-                    ", ".join([r.name for r in after.roles]))
-                await guild.get_channel(channel).send(
-                                            msg)
+            name = after
+            name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
+            role = discord.Embed(colour=discord.Color.orange(), timestamp=time)
+            role.add_field(name="Roles Before:", value=" ,".join(role.name for role in before.roles), inline=False)
+            role.add_field(name="Roles After:", value=" ,".join(role.name for role in after.roles), inline=False)
+            role.set_footer(text="User ID: {}".format(after.id), icon_url=after.avatar_url)
+            role.set_author(name=name + " - Updated Roles", icon_url=after.avatar_url)
+            role.set_thumbnail(url="https://i.coltoutram.nl/update-orange.png") # https://i.coltoutram.nl/credits.txt
+            try:
+                await guild.get_channel(channel).send(embed=role)
+            except:
+                pass
+
         if not before.nick == after.nick and await self.config.guild(guild).toggleuser():
-            if await self.config.guild(guild).embed() == True:
-                name = before
-                name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
-                infomessage = "{}'s nickname has changed".format(before.mention)
-                updmessage = discord.Embed(description=infomessage, colour=discord.Color.blue(), timestamp=time)
-                updmessage.add_field(name="Nickname Before:", value=before.nick)
-                updmessage.add_field(name="Nickname After:", value=after.nick)
-                updmessage.set_footer(text="User ID: {}".format(before.id), icon_url=after.avatar_url)
-                updmessage.set_author(name=name + " - Nickname Changed", icon_url=after.avatar_url)
-                updmessage.set_thumbnail(url="http://i.imgur.com/I5q71rj.png")
-                try:
-                    await guild.get_channel(channel).send( embed=updmessage)
-                except:
-                    pass
-            else:
-                await guild.get_channel(channel).send(
-                                            ":person_with_pouting_face::skin-tone-3: `{}` **{}** changed their nickname from **{}** to **{}**".format(
-                                                time.strftime(fmt), before.name, before.nick, after.nick))
+            name = before
+            name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
+            infomessage = "{}'s nickname has changed".format(before.mention)
+            updmessage = discord.Embed(description=infomessage, colour=discord.Color.blue(), timestamp=time)
+            updmessage.add_field(name="Nickname Before:", value=before.nick)
+            updmessage.add_field(name="Nickname After:", value=after.nick)
+            updmessage.set_footer(text="User ID: {}".format(before.id), icon_url=after.avatar_url)
+            updmessage.set_author(name=name + " - Nickname Changed", icon_url=after.avatar_url)
+            updmessage.set_thumbnail(url="http://i.imgur.com/I5q71rj.png")
+            try:
+                await guild.get_channel(channel).send(embed=updmessage)
+            except:
+                pass
 
     async def on_member_ban(self, guild, member):
-        
-        if await self.config.guild(guild).toggleban() == False:
-            return
+
         channel = await self.config.guild(guild).Channel()
         if channel is None:
             return
         time = datetime.datetime.utcnow()
         fmt = '%H:%M:%S'
-        if await self.config.guild(guild).embed() == True:
-            name = member
-            name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
-            
-            infomessage = "{} has been banned from the guild.".format(member.mention)
-            banmessage = discord.Embed(description=infomessage, colour=discord.Color.red(), timestamp=time)
-            banmessage.add_field(name="Info:", value=infomessage, inline=False)
-            banmessage.set_footer(text="User ID: {}".format(member.id), icon_url=member.avatar_url)
-            banmessage.set_author(name=name + " - Banned User", icon_url=member.avatar_url)
-            banmessage.set_thumbnail(url=member.avatar_url)
-            try:
-                await guild.get_channel(channel).send( embed=banmessage)
-            except:
-                await guild.get_channel(channel).send(
-                                            "How is embed actionlogs going to work when I don't have embed links permissions?")
-        else:
-            msg = ":hammer: `{}` {}({}) has been banned!".format(time.strftime(fmt), member, member.id)
-            await guild.get_channel(channel).send(msg)
+        name = member
+        infomessage = "{} has been banned from the guild.".format(member.mention)
+        banmessage = discord.Embed(description=infomessage, colour=discord.Color.red(), timestamp=time)
+        banmessage.add_field(name="Info:", value=infomessage, inline=False)
+        banmessage.set_footer(text="User ID: {}".format(member.id), icon_url=member.avatar_url)
+        banmessage.set_author(name=name, icon_url=member.avatar_url)
+        banmessage.set_thumbnail(url=member.avatar_url)
+        try:
+            await guild.get_channel(channel).send(embed=banmessage)
+        except:
+            await guild.get_channel(channel).send("How is embed actionlogs going to work when I don't have embed links permissions?")
+
+    async def on_member_unban(self, guild, member):
+
+        channel = await self.config.guild(guild).Channel()
+        if channel is None:
+            return
+        time = datetime.datetime.utcnow()
+        fmt = '%H:%M:%S'
+        name = member
+        infomessage = "{} has been unbanned from the guild.".format(member.mention)
+        unbanmessage = discord.Embed(description=infomessage, colour=discord.Color.green(), timestamp=time)
+        unbanmessage.add_field(name="Info:", value=infomessage, inline=False)
+        unbanmessage.set_footer(text="User ID: {}".format(member.id), icon_url=member.avatar_url)
+        unbanmessage.set_author(name=name, icon_url=member.avatar_url)
+        unbanmessage.set_thumbnail(url=member.avatar_url)
+        try:
+            await guild.get_channel(channel).send(embed=unbanmessage)
+        except:
+            await guild.get_channel(channel).send("How is embed actionlogs going to work when I don't have embed links permissions?")
 
     @actionlogset.command(name='toggleall', pass_context=True, no_pm=True)
     async def toggleall(self, ctx):
@@ -759,4 +634,13 @@ class Actionlogs:
         elif await self.config.guild(guild).toggleban() == True:
             await self.config.guild(guild).toggleban.set(False)
             
-            await ctx.send("Ban messages disabled")
+            await ctx.send("Unban messages disabled")
+
+        if await self.config.guild(guild).toggleunban() == False:
+            await self.config.guild(guild).toggleunban.set(True)
+            
+            await ctx.send("Ban messages enabled")
+        elif await self.config.guild(guild).toggleunban() == True:
+            await self.config.guild(guild).toggleunban.set(False)
+            
+            await ctx.send("Unban messages disabled")

@@ -338,8 +338,6 @@ class Actionlogs:
             name.set_thumbnail(url="https://i.coltoutram.nl/edit-blue.png")
             try:
                 await guild.get_channel(channel).send(embed=name)
-            except:
-                pass
             except AttributeError:
                 return
 

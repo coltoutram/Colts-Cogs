@@ -1,5 +1,5 @@
 # Colts-Cogs
-They're all v3 cogs and don't look at the develop branch as its just for testing and really messy.
+This branch is for a custom bot, I add stuff just for this bot and server it is in such as ignoring channel in actionlogs.
 
 
 ## Cogs

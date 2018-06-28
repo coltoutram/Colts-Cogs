@@ -238,7 +238,7 @@ class Actionlogs:
 
     async def on_message_delete(self, message):
         guild = message.guild
-        if message.channel == 448604074171170826:
+        if message.channel.id == 448604074171170826:
             return
         if await self.config.guild(guild).Channel() is None:
             return

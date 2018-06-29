@@ -71,6 +71,8 @@ class BanList():
         if not user:
             return await ctx.send(embed=self.embed_maker("No User/ID found, did you forget to mention one?", 0x000000, None))
         checkID = user.id
+        name = user
+        avatar = user
         is_banned = await dBans.lookup(user_id=checkID)
         name = user
         avatar = user.avatar_url

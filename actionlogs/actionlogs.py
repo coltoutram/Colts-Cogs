@@ -238,7 +238,10 @@ class Actionlogs:
 
     async def on_message_delete(self, message):
         guild = message.guild
-        
+        if message.channel.id == 448604074171170826:
+            return
+        if message.channel.id == 460239790151958549:
+            return
         if await self.config.guild(guild).Channel() is None:
             return
         if await self.config.guild(guild).toggledelete() == False:
@@ -263,9 +266,48 @@ class Actionlogs:
             delmessage.set_author(name=name + " - Deleted Message", url="http://i.imgur.com/fJpAFgN.png", icon_url=message.author.avatar_url)
             delmessage.set_thumbnail(url="http://i.imgur.com/fJpAFgN.png")
             try:
-                await guild.get_channel(channel).send( embed=delmessage)
+                await guild.get_channel(channel).send(embed=delmessage)
             except:
                 pass
+
+
+    async def on_message_edit(self, before, after):
+        guild = before.guild
+        if before.channel.id == 448604074171170826:
+            return
+        if before.channel.id == 460239790151958549:
+            return
+        if before.author.bot:
+            return
+        if await self.config.guild(guild).toggleedit() == False:
+            return
+        if before.content == after.content:
+            return
+        cleanbefore = before.content
+        for i in before.mentions:
+            cleanbefore = cleanbefore.replace(i.mention, str(i))
+        cleanafter = after.content
+        for i in after.mentions:
+            cleanafter = cleanafter.replace(i.mention, str(i))
+        channel = await self.config.guild(guild).Channel()
+        if channel is None:
+            return
+        time = datetime.datetime.utcnow()
+        fmt = '%H:%M:%S'
+        name = before.author
+        name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
+        infomessage = "A message by {}, was edited in {}".format(before.author.mention, before.channel.mention)
+        delmessage = discord.Embed(description=infomessage, colour=discord.Color.blue(), timestamp=after.created_at)
+        delmessage.add_field(name="Before Message:", value=cleanbefore, inline=False)
+        delmessage.add_field(name="After Message:", value=cleanafter)
+        delmessage.set_footer(text="User ID: {}".format(before.author.id), icon_url=before.author.avatar_url)
+        delmessage.set_author(name=name + " - Edited Message", url="http://i.imgur.com/Q8SzUdG.png", icon_url=before.author.avatar_url)
+        delmessage.set_thumbnail(url="https://i.coltoutram.nl/edit-blue.png")
+        try:
+            await guild.get_channel(channel).send(embed=delmessage)
+        except:
+            pass
+
 
     async def on_member_join(self, member):
         guild = member.guild
@@ -338,41 +380,7 @@ class Actionlogs:
             except:
                 pass
 
-
-    async def on_message_edit(self, before, after):
-        guild = before.guild
-        
-        if before.author.bot:
-            return
-        if await self.config.guild(guild).toggleedit() == False:
-            return
-        if before.content == after.content:
-            return
-        cleanbefore = before.content
-        for i in before.mentions:
-            cleanbefore = cleanbefore.replace(i.mention, str(i))
-        cleanafter = after.content
-        for i in after.mentions:
-            cleanafter = cleanafter.replace(i.mention, str(i))
-        channel = await self.config.guild(guild).Channel()
-        if channel is None:
-            return
-        time = datetime.datetime.utcnow()
-        fmt = '%H:%M:%S'
-        name = before.author
-        name = " ~ ".join((name.name, name.nick)) if name.nick else name.name
-        infomessage = "A message by {}, was edited in {}".format(before.author.mention, before.channel.mention)
-        delmessage = discord.Embed(description=infomessage, colour=discord.Color.blue(), timestamp=after.created_at)
-        delmessage.add_field(name="Before Message:", value=cleanbefore, inline=False)
-        delmessage.add_field(name="After Message:", value=cleanafter)
-        delmessage.set_footer(text="User ID: {}".format(before.author.id), icon_url=before.author.avatar_url)
-        delmessage.set_author(name=name + " - Edited Message", url="http://i.imgur.com/Q8SzUdG.png", icon_url=before.author.avatar_url)
-        delmessage.set_thumbnail(url="https://i.coltoutram.nl/edit-blue.png")
-        try:
-            await guild.get_channel(channel).send(embed=delmessage)
-        except:
-            pass
-
+              
     async def on_guild_update(self, before, after):
         guild = before
         if await self.config.guild(guild).toggleguild() == False:

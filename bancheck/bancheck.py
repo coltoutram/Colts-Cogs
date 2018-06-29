@@ -79,6 +79,7 @@ class BanList():
                 e.set_author(name=user, icon_url=user.avatar_url)
                 e.description = "For proof and more info go to http://bans.discordlist.net"
                 e.add_field(name="Information:", value=infomessage, inline=False)
+                e.set_author(name=user)
                 e.set_footer(text="User ID: {}".format(user.id))
                 e.set_thumbnail(url=user.avatar_url)
                 return await ctx.send(embed=e)

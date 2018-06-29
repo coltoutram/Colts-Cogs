@@ -275,9 +275,9 @@ class Actionlogs:
 
     async def on_message_edit(self, before, after):
         guild = before.guild
-        if message.channel.id == 448604074171170826:
+        if before.message.channel.id == 448604074171170826:
             return
-        if message.channel.id == 460239790151958549:
+        if before.message.channel.id == 460239790151958549:
             return
         if before.author.bot:
             return

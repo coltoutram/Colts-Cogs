@@ -72,15 +72,17 @@ class BanList():
             return await ctx.send(embed=self.embed_maker("No User/ID found, did you forget to mention one?", 0x000000, None))
         checkID = user.id
         is_banned = await dBans.lookup(user_id=checkID)
+        name = user
+        avatar = user.avatar_url
         if is_banned:
             try:
                 infomessage = "This user has one or more registered bans which means he participated in an illegal activity, raiding or spamming of servers. Proceed with caution."
                 e = discord.Embed(title="Ban's Found!", colour=discord.Colour.red())
-                e.set_author(name=user, icon_url=user.avatar_url)
                 e.description = "For proof and more info go to http://bans.discordlist.net"
                 e.add_field(name="Information:", value=infomessage, inline=False)
+                e.set_author(name=name, icon_url=avatar)
                 e.set_footer(text="User ID: {}".format(user.id))
-                e.set_thumbnail(url=user.avatar_url)
+                e.set_thumbnail(url=avatar)
                 return await ctx.send(embed=e)
             except KeyError:
                 return
@@ -89,8 +91,9 @@ class BanList():
             e = discord.Embed(title="No Ban's Found.", colour=discord.Colour.green())
             e.description = "For more info goto http://bans.discordlist.net"
             e.add_field(name="Information:", value=infomessage, inline=False)
+            e.set_author(name=name, icon_url=avatar)
             e.set_footer(text="User ID: {}".format(user.id))
-            e.set_thumbnail(url=user.avatar_url)
+            e.set_thumbnail(url=avatar)
             return await ctx.send(embed=e)
         except KeyError:
             return
@@ -103,10 +106,12 @@ class BanList():
         is_banned = await dBans.lookup(user_id=checkID)
         channel_id = await self.config.guild(member.guild).channel()
         channel = self.bot.get_channel(channel_id)
+        name = member
+        avatar = member.avatar_url
         if not member:
-            return await channel.send(embed=self.embed_maker("No User/ID found, did you forget to mention one?", 0x000000, None))
+            return await print("A member has joined but no User/ID was found.")
         if member.bot:
-            return await channel.send(embed=self.embed_maker("This user is a BOT.", 0x000000, None))
+            return await print("A member has joined but it seems the member is a BOT.")
         if enabled:
             return
         if is_banned:
@@ -115,8 +120,9 @@ class BanList():
                 e = discord.Embed(title="Ban's Found!", colour=discord.Colour.red())
                 e.description = "For proof and more info go to http://bans.discordlist.net"
                 e.add_field(name="Information:", value=infomessage, inline=False)
+                e.set_author(name=name, icon_url=avatar)
                 e.set_footer(text="User ID: {}".format(member.id))
-                e.set_thumbnail(url=member.avatar_url)
+                e.set_thumbnail(url=avatar)
                 return await channel.send(embed=e)
             except KeyError:
                 return
@@ -125,8 +131,9 @@ class BanList():
             e = discord.Embed(title="No Ban's Found.", colour=discord.Colour.green())
             e.description = "For more info goto http://bans.discordlist.net"
             e.add_field(name="Information:", value=infomessage, inline=False)
+            e.set_author(name=name, icon_url=avatar)
             e.set_footer(text="User ID: {}".format(member.id))
-            e.set_thumbnail(url=member.avatar_url)
+            e.set_thumbnail(url=avatar)
             return await channel.send(embed=e)
         except KeyError:
             return

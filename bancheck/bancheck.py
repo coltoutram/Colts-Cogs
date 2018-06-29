@@ -71,6 +71,8 @@ class BanList():
         if not user:
             return await ctx.send(embed=self.embed_maker("No User/ID found, did you forget to mention one?", 0x000000, None))
         checkID = user.id
+        name = user
+        avatar = user
         is_banned = await dBans.lookup(user_id=checkID)
         if is_banned:
             try:
@@ -79,7 +81,7 @@ class BanList():
     
                 e.description = "For proof and more info go to http://bans.discordlist.net"
                 e.add_field(name="Information:", value=infomessage, inline=False)
-                e.set_author(name=user, icon_url=user.avatar_url)
+                e.set_author(name=name, icon_url=user.avatar_url)
                 e.set_footer(text="User ID: {}".format(user.id))
                 e.set_thumbnail(url=user.avatar_url)
                 return await ctx.send(embed=e)

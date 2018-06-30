@@ -28,7 +28,8 @@ class Speedtest:
     def speed_test(self):
         return str(subprocess.check_output(['speedtest-cli'], stderr=subprocess.STDOUT))
 
-    @commands.command(pass_context=True, no_pm=False)
+    @commands.command(no_pm=False)
+    @checks.is_owner()
     async def speedtest(self, ctx):
         try:
             channel = ctx.message.channel

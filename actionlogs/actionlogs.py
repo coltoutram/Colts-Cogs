@@ -238,10 +238,6 @@ class Actionlogs:
 
     async def on_message_delete(self, message):
         guild = message.guild
-        if message.channel.id == 448604074171170826:
-            return
-        if message.channel.id == 460239790151958549:
-            return
         if await self.config.guild(guild).Channel() is None:
             return
         if await self.config.guild(guild).toggledelete() == False:
@@ -273,10 +269,6 @@ class Actionlogs:
 
     async def on_message_edit(self, before, after):
         guild = before.guild
-        if before.channel.id == 448604074171170826:
-            return
-        if before.channel.id == 460239790151958549:
-            return
         if before.author.bot:
             return
         if await self.config.guild(guild).toggleedit() == False:

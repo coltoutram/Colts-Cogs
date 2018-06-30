@@ -2,17 +2,14 @@ from discord.ext import commands
 from redbot.core import checks
 from redbot.core import Config
 import discord
-#from .utils.dataIO import dataIO
 import asyncio
 import re
 import os
 import subprocess
-import logging
 import datetime
 
 try:
     import speedtest
-
     module_avail = True
 except ImportError:
     module_avail = False
@@ -59,8 +56,8 @@ class Speedtest:
             embed.set_footer(text= now.strftime("%Y-%m-%d %H:%M"))
             await ctx.send(embed=embed)
         except KeyError:
-            await ctx.send('Please setup the speedtest settings using **{}parameters**'.format(ctx.prefix))
+            print("An error occured")
 
     if module_avail == False:
-        ctx.send("You need to run `pip install speedtest-cli`");
+        ctx.send("You currently don't have speedtest-cli installed, you need to run `pip install speedtest-cli`");
         raise RuntimeError("You need to run `pip3 install speedtest-cli`")

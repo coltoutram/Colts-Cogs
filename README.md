@@ -1,5 +1,5 @@
 # Colts-Cogs
-This branch is for a custom bot, I add stuff just for this bot and server it is in such as ignoring channel in actionlogs.
+Welcome, below are various cogs from different authors from redbot v2. Master branch is what should work fine, other branches are messy or are not for public use.
 
 
 ## Cogs

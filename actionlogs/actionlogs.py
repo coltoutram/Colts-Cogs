@@ -403,6 +403,8 @@ class Actionlogs:
         channel = await self.config.guild(guild).Channel()
         if channel is None:
             return
+        if before.channel == after.channel:
+            return
         time = datetime.datetime.utcnow()
         fmt = '%H:%M:%S'
         if before.channel is None:

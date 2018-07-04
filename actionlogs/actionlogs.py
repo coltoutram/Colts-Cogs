@@ -637,7 +637,7 @@ class Actionlogs:
         if await self.config.guild(guild).toggleunban() == False:
             await self.config.guild(guild).toggleunban.set(True)
             
-            await ctx.send("Ban messages enabled")
+            await ctx.send("Unban messages enabled")
         elif await self.config.guild(guild).toggleunban() == True:
             await self.config.guild(guild).toggleunban.set(False)
             

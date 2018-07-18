@@ -11,7 +11,7 @@ class Playskip:
     @commands.command()
     async def playskip(self, ctx, *, query):
         """Play and skip."""
-        skip = self.bot.get_command('skip')
         play = self.bot.get_command('play')
-        await ctx.invoke(skip)
+        skip = self.bot.get_command('skip')
         await ctx.invoke(play, query=query)
+        await ctx.invoke(skip)

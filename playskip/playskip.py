@@ -1,5 +1,4 @@
 import discord
-from redbot.core.utils.antispam import AntiSpam
 from discord.ext import commands
 from redbot.core import checks
 

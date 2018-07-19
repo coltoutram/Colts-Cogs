@@ -20,7 +20,7 @@ class BanList():
         self.messages = {}; print('NOTICE: LOADED BANCHECK')
 
     async def __local_check(self, ctx):
-    return False
+        return False
     
     @checks.admin_or_permissions(manager_server=True)
     @commands.group(pass_context=True)

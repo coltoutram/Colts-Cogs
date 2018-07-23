@@ -1,4 +1,6 @@
 import discord
+import asyncio
+import time
 from discord.ext import commands
 from redbot.core import checks
 
@@ -13,4 +15,5 @@ class Playskip:
         play = self.bot.get_command('play')
         skip = self.bot.get_command('skip')
         await ctx.invoke(play, query=query)
+        await asyncio.sleep(1)
         await ctx.invoke(skip)

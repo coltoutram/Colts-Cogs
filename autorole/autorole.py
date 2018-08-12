@@ -23,7 +23,7 @@ class Autorole:
         self.config.register_guild(**default_settings)
         self.direct = "data/autorole/settings.json"
         self.users = {}
-        self.messages = {}; print('NOTICE: LOADED AUTOROLE')
+        self.messages = {}
 
         
     async def _no_perms(self, guild):

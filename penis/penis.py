@@ -8,7 +8,7 @@ class Penis:
     """Penis related commands."""
 
     def __init__(self, bot):
-        self.bot = bot; print('NOTICE: LOADED PENIS')
+        self.bot = bot
 
     @commands.command(pass_context=True)
     async def penis(self, ctx, *users: discord.Member):

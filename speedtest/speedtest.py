@@ -23,7 +23,7 @@ class Speedtest:
         self.config = Config.get_conf(self, 24341100993)
         self.direct = "data/speedtest/settings.json"
         self.users = {}
-        self.messages = {}; print('NOTICE: LOADED SPEEDTEST')
+        self.messages = {}
 
     def speed_test(self):
         return str(subprocess.check_output(['speedtest-cli'], stderr=subprocess.STDOUT))

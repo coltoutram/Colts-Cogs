@@ -21,7 +21,7 @@ class Actionlogs:
         self.bot = bot
         self.direct = "data/actionlogset/settings.json"
         self.config = Config.get_conf(self, 2463123480)
-        self.config.register_guild(**inv_settings); print('NOTICE: LOADED ACTIONLOGS')
+        self.config.register_guild(**inv_settings)
 
     @checks.admin_or_permissions(administrator=True)
     @commands.group(name='actionlogtoggle', pass_context=True, no_pm=True)

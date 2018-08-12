@@ -17,7 +17,7 @@ class BanList():
         self.config = Config.get_conf(self, 54564894107)
         self.config.register_guild(**{"ENABLED":True})
         self.users = {}
-        self.messages = {}; print('NOTICE: LOADED BANCHECK')
+        self.messages = {}
 
     async def __local_check(self, ctx):
         return False

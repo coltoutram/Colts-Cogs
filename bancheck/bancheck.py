@@ -42,7 +42,7 @@ class BanList():
                 e.description = "Successfully changed bancheck channel."
                 e.add_field(name="Information:", value=infomessage, inline=False)
                 e.set_footer(text="Channel ID: {}".format(channel.id))
-                e.set_thumbnail(url="http://i.coltoutram.nl/green-tick.png")
+                e.set_thumbnail(url="http://i.colt.ws/green-tick.png")
                 return await ctx.send(embed=e)
                                   
         except discord.errors.Forbidden:

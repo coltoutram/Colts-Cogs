@@ -294,7 +294,7 @@ class Actionlogs:
         delmessage.add_field(name="After Message:", value=cleanafter)
         delmessage.set_footer(text="User ID: {}".format(before.author.id), icon_url=before.author.avatar_url)
         delmessage.set_author(name=name + " - Edited Message", url="http://i.imgur.com/Q8SzUdG.png", icon_url=before.author.avatar_url)
-        delmessage.set_thumbnail(url="https://i.coltoutram.nl/edit-blue.png")
+        delmessage.set_thumbnail(url="https://i.colt.ws/edit-blue.png")
         try:
             await guild.get_channel(channel).send(embed=delmessage)
         except:
@@ -366,7 +366,7 @@ class Actionlogs:
                 before.name, after.name)
             name.add_field(name="Info:", value=infomessage, inline=False)
             name.set_author(name=time.strftime(fmt) + " - Channel Update")
-            name.set_thumbnail(url="https://i.coltoutram.nl/edit-blue.png")
+            name.set_thumbnail(url="https://i.colt.ws/edit-blue.png")
             try:
                 await guild.get_channel(channel).send(embed=name)
             except:
@@ -415,7 +415,7 @@ class Actionlogs:
             updmessage.set_footer(text="User ID: {}".format(member.id))
             updmessage.set_author(name=time.strftime(fmt) + " - Voice Channel Changed",
                                 url="http://i.imgur.com/8gD34rt.png")
-            updmessage.set_thumbnail(url="https://i.coltoutram.nl/speaker-light-blue.png") # https://coltoutram.nl/credits.txt
+            updmessage.set_thumbnail(url="https://i.colt.ws/speaker-light-blue.png") # https://colt.ws/credits.txt
             try:
                 return await guild.get_channel(channel).send(embed=updmessage)
             except:
@@ -429,7 +429,7 @@ class Actionlogs:
             updmessage.set_footer(text="User ID: {}".format(member.id))
             updmessage.set_author(name=time.strftime(fmt) + " - Voice Channel Changed",
                                 url="http://i.imgur.com/8gD34rt.png")
-            updmessage.set_thumbnail(url="https://i.coltoutram.nl/speaker-light-blue.png") # https://coltoutram.nl/credits.txt
+            updmessage.set_thumbnail(url="https://i.colt.ws/speaker-light-blue.png") # https://colt.ws/credits.txt
             try:
                 return await guild.get_channel(channel).send(embed=updmessage)
             except:
@@ -442,7 +442,7 @@ class Actionlogs:
             updmessage.set_footer(text="User ID: {}".format(member.id))
             updmessage.set_author(name=time.strftime(fmt) + " - Voice Channel Changed",
                                 url="http://i.imgur.com/8gD34rt.png")
-            updmessage.set_thumbnail(url="https://i.coltoutram.nl/speaker-light-blue.png") # https://coltoutram.nl/credits.txt
+            updmessage.set_thumbnail(url="https://i.colt.ws/speaker-light-blue.png") # https://colt.ws/credits.txt
             try:
                 await guild.get_channel(channel).send(embed=updmessage)
             except:
@@ -465,7 +465,7 @@ class Actionlogs:
             role.add_field(name="Roles After:", value=" ,".join(role.name for role in after.roles), inline=False)
             role.set_footer(text="User ID: {}".format(after.id), icon_url=after.avatar_url)
             role.set_author(name=name + " - Updated Roles", icon_url=after.avatar_url)
-            role.set_thumbnail(url="https://i.coltoutram.nl/update-orange.png") # https://i.coltoutram.nl/credits.txt
+            role.set_thumbnail(url="https://i.colt.ws/update-orange.png") # https://i.colt.ws/credits.txt
             try:
                 await guild.get_channel(channel).send(embed=role)
             except:

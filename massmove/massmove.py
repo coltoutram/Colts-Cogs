@@ -1,6 +1,5 @@
 import discord
-from discord.ext import commands
-from redbot.core import checks
+from redbot.core import checks, commands
 import asyncio
 
 

@@ -1,0 +1,13 @@
+{
+  "author": [
+    "Colt#0001, sitrtk"
+  ],
+  "description": "Plays and skips the current song.",
+  "short": "Plays and skips the current song.",
+  "install_msg" : "Thanks for using my cog.",
+  "tags": [
+    "utility",
+    "audio"
+  ],
+  "type": "COG"
+}

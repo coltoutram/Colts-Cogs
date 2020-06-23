@@ -1,0 +1,13 @@
+{
+  "author": [
+    "Colt#0001, Dinnerb0ne#2067"
+  ],
+  "description": "Runs a speedtest and prints the result, uses speedtest-cli.",
+  "short": "Runs a speedtest and prints the result.",
+  "install_msg" : "Thanks for downloading, simply use !speedtest to run a speedtest.",
+  "tags": [
+    "utility",
+    "system"
+  ],
+  "type": "COG"
+}

@@ -1,0 +1,13 @@
+{
+  "author": [
+    "Colt#0001, Lunar-Dust"
+  ],
+  "description": "Automatically adds a role to users who join your server.",
+  "short": "Automatically adds a role to users who join your server.",
+  "install_msg" : "Read the README on github for more info.",
+  "tags": [
+    "role",
+    "administration"
+  ],
+  "type": "COG"
+}

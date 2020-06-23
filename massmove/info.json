@@ -1,0 +1,14 @@
+{
+    "author": [
+      "Colt#0001, Kowlin"
+    ],
+    "description": "Massmove users to another voice channel, use channel ID's from the voice channels.",
+    "short": "Massmove users to another voice channel, use channel ID's from the voice channels.",
+    "install_msg" : "Thanks for using one of my cogs, use the channel ID's from the voice channels.",
+    "tags": [
+      "utility",
+      "moderation"
+    ],
+    "type": "COG"
+  }
+  

@@ -1,0 +1,13 @@
+{
+  "author": [
+    "Colt#0001, BakersBakeBread"
+  ],
+  "description": "Check if user is banned on https://bans.discordlist.net/",
+  "short": "Check if user is banned on https://bans.discordlist.net/",
+  "install_msg" : "(CURRENTLY DISABLED) This will scan https://bans.discordlist.net/ to see if a user has a ban. Remember to set channel.",
+  "tags": [
+    "ban",
+    "bancheck"
+  ],
+  "type": "COG"
+}
